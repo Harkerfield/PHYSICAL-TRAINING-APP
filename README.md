@@ -77,8 +77,5 @@ The frontend is built using React. It provides a dynamic user interface for part
 ## Usage
 Participants can log in, view the map with key points, and track their points earned by scanning barcodes. Administrators can manage locations and monitor team performance through the admin page.
 
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
-
 ## License
 This project is licensed under the MIT License.
