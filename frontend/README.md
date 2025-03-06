@@ -53,12 +53,10 @@ The Physical Training App is a full-stack application designed for a physical tr
    ```
 
 ## Usage
-- Access the application in your web browser at `http://localhost:3001`.
+- Access the application in your web browser at `http://localhost:3000`.
 - Participants can log in, view the map, and start scanning barcodes to earn points.
 - Admins can log in to manage locations and view team performance.
 
-## Contributing
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
 
 ## License
 This project is licensed under the MIT License.
