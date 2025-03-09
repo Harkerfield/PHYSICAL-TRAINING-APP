@@ -26,20 +26,28 @@ services:
     networks:
       - app-network
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: ["/bin/sh", "-c", "sleep 10 && /usr/src/app/wait-for-it.sh db:${POSTGRES_PORT} -- npm start"]
   db:
-    image: postgres
+    build: ./backend/db
     container_name: db
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint: ["/bin/sh", "-c", "envsubst < /docker-entrypoint-initdb.d/init.sql > /docker-entrypoint-initdb.d/init_substituted.sql && mv /docker-entrypoint-initdb.d/init_substituted.sql /docker-entrypoint-initdb.d/init.sql && docker-entrypoint.sh postgres"]
 volumes:
   db-data:
 networks:

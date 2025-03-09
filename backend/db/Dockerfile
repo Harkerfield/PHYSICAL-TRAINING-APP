@@ -1,0 +1,5 @@
+FROM postgres:latest
+
+RUN apt-get update && apt-get install -y gettext
+
+COPY ./init /docker-entrypoint-initdb.d

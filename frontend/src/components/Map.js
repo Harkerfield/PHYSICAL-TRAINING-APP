@@ -18,7 +18,7 @@ const MapComponent = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch('/api/locations');
+        const response = await fetch('http://localhost:3001/api/locations');
         if (response.ok) {
           setApiConnected(true);
         }

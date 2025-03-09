@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const AdminPage = () => {
   const [teams, setTeams] = useState([]);
@@ -12,8 +11,9 @@ const AdminPage = () => {
 
   const fetchTeams = async () => {
     try {
-      const response = await axios.get('/api/teams');
-      setTeams(response.data);
+      const response = await fetch('http://localhost:3001/user/teams');
+      const data = await response.json();
+      setTeams(data);
     } catch (error) {
       console.error('Error fetching teams:', error);
     }
@@ -21,8 +21,9 @@ const AdminPage = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await axios.get('/api/locations');
-      setLocations(response.data);
+      const response = await fetch('/api/locations');
+      const data = await response.json();
+      setLocations(data);
     } catch (error) {
       console.error('Error fetching locations:', error);
     }
@@ -36,16 +37,16 @@ const AdminPage = () => {
         <thead>
           <tr>
             <th>Team Name</th>
-            <th>Members</th>
-            <th>Total Points</th>
+            <th>Pin Code</th>
+            <th>Created At</th>
           </tr>
         </thead>
         <tbody>
           {teams.map((team) => (
             <tr key={team.id}>
               <td>{team.name}</td>
-              <td>{team.members.join(', ')}</td>
-              <td>{team.totalPoints}</td>
+              <td>{team.pin_code}</td>
+              <td>{new Date(team.created_at).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

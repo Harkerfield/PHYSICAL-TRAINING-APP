@@ -2,15 +2,14 @@ const express = require('express');
 require('dotenv').config();
 const morgan = require('morgan');
 const cors = require('cors');
-
-const knex = require('./db/dbConnections.js');
-
 const session = require('express-session');
-const KnexSessionStore = require('connect-session-knex')(session);
-const store = new KnexSessionStore({
-  knex,
-  tablename: 'sessions',
-});
+const pgSession = require('connect-pg-simple')(session);
+const pool = require('./db');
+
+const escapePgIdentifier = (value) => value.replace(/"/g, '""');
+
+// Override the escapePgIdentifier function in pgSession
+pgSession.escapePgIdentifier = escapePgIdentifier;
 
 const app = express();
 
@@ -18,6 +17,11 @@ const app = express();
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 const SESSION_SECRET =
   process.env.SESSION_SECRET || '6f646a6c6e6775306d7a68686d64637';
+
+const store = new pgSession({
+  pool: pool, // Use the existing pool instance
+  tableName: 'sessions',
+});
 
 // express app configuration
 app.use(morgan('tiny'));

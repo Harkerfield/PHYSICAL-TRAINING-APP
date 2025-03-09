@@ -6,25 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "knex:migrate": "knex migrate:latest",
-    "knex:rollback": "knex migrate:rollback",
-    "knex:seed": "knex seed:run",
     "start:postgres": "docker-compose up -d db"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "connect-session-knex": "^3.0.1",
+    "bcryptjs": "^2.4.3",
+    "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
-    "knex": "^2.4.2",
-    "knex-paginate": "^3.1.0",
     "morgan": "^1.10.0",
-    "pg": "^8.10.0"
+    "pg": "^8.10.0",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "jest": "^29.5.0",

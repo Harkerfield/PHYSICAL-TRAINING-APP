@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Kadena Air Base Gate 1",
+    "latitude": 26.3555,
+    "longitude": 127.7681,
+    "points": 10
+  },
+  {
+    "name": "Kadena Air Base Gate 2",
+    "latitude": 26.3575,
+    "longitude": 127.7691,
+    "points": 15
+  },
+  {
+    "name": "Kadena Air Base Gate 3",
+    "latitude": 26.3595,
+    "longitude": 127.7701,
+    "points": 20
+  },
+  {
+    "name": "Kadena Air Base Gate 4",
+    "latitude": 26.3615,
+    "longitude": 127.7711,
+    "points": 25
+  },
+  {
+    "name": "Kadena Air Base Gate 5",
+    "latitude": 26.3635,
+    "longitude": 127.7721,
+    "points": 30
+  }
+]
