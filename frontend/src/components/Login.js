@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [teamName, setTeamName] = useState('');
+  const [pinCode, setPinCode] = useState('');
   const [error, setError] = useState('');
   const history = useHistory();
 
@@ -12,12 +12,12 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3001/user/login', {
+      const response = await fetch('http://localhost:3001/user/login-team', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ teamName, pinCode }),
       });
 
       if (!response.ok) {
@@ -26,7 +26,8 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      history.push('/dashboard'); // Redirect to dashboard after successful login
+      localStorage.setItem('teamId', data.teamId); // Store teamId in localStorage
+      history.push('/game'); // Redirect to game after successful login
     } catch (err) {
       setError(err.message);
     }
@@ -37,20 +38,20 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          <label>Username:</label>
+          <label>Team Name:</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={teamName}
+            onChange={(e) => setTeamName(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>Pin Code:</label>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={pinCode}
+            onChange={(e) => setPinCode(e.target.value)}
             required
           />
         </div>

@@ -1,3 +1,4 @@
+/* Updated styles for better responsiveness and appearance */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -63,6 +64,7 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
+/* Responsive styles */
 @media (max-width: 768px) {
   .container {
     width: 100%;
@@ -96,4 +98,77 @@ h1, h2, h3 {
   }
 }
 
-/* Add more responsive styles as needed */
+/* Additional styles for better appearance */
+.register-container, .login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.register-container h2, .login-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.register-container form div, .login-container form div {
+    margin-bottom: 15px;
+}
+
+.register-container form label, .login-container form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.register-container form input, .login-container form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.register-container form button, .login-container form button {
+    width: 100%;
+    padding: 10px;
+    background: #35424a;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.register-container form button:hover, .login-container form button:hover {
+    background: #45a049;
+}
+
+.admin-page table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.admin-page table th, .admin-page table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.admin-page table th {
+    background: #f4f4f4;
+}
+
+.admin-page ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-page ul li {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}

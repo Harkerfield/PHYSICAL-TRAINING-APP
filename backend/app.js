@@ -53,6 +53,16 @@ app.use(
 const userRouter = require('./routes/user.route.js');
 app.use('/user', userRouter);
 
+app.get('/api/routes', (req, res) => {
+  const routes = [
+    { path: '/user/teams', method: 'GET', protected: false },
+    { path: '/user/register-team', method: 'POST', protected: false },
+    { path: '/user/login-team', method: 'POST', protected: false },
+    { path: '/user/update-points', method: 'PUT', protected: true },
+    { path: '/user/submit-location', method: 'POST', protected: true }
+  ];
+  res.json(routes);
+});
 
 app.get('/', (req, res) => {
   console.log(app);
