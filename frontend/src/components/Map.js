@@ -9,29 +9,10 @@ import Point from 'ol/geom/Point';
 import { Icon, Style } from 'ol/style';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import '../styles/Map.css';
 
-const MapComponent = () => {
+const MapComponent = ({ locations }) => {
   const [map, setMap] = useState(null);
-  const [locations, setLocations] = useState([]);
-  const [apiConnected, setApiConnected] = useState(false);
-
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/locations');
-        if (response.ok) {
-          setApiConnected(true);
-        }
-        const data = await response.json();
-        setLocations(data);
-      } catch (error) {
-        console.error('Error fetching locations:', error);
-        setApiConnected(false);
-      }
-    };
-
-    fetchLocations();
-  }, []);
 
   useEffect(() => {
     const initialMap = new Map({
@@ -42,39 +23,42 @@ const MapComponent = () => {
         }),
       ],
       view: new View({
-        center: fromLonLat([127.755, 26.355]), // Kadena Air Base coordinates
-        zoom: 13,
+        center: fromLonLat([127.771759, 26.337825]), // Kadena Air Base coordinates
+        zoom: 15,
       }),
     });
     setMap(initialMap);
   }, []);
 
   useEffect(() => {
-    if (map && locations.length > 0) {
-      locations.forEach(location => {
+    if (map) {
+      const features = locations.map(location => {
+        const [longitude, latitude] = location.coordinates;
         const marker = new Feature({
-          geometry: new Point(fromLonLat([location.longitude, location.latitude])),
+          geometry: new Point(fromLonLat([longitude, latitude])),
         });
         marker.setStyle(new Style({
           image: new Icon({
-            src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-            scale: 0.05,
+            src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="red"/></svg>',
+            scale: 1,
           }),
         }));
-        map.addLayer(new VectorLayer({
-          source: new VectorSource({
-            features: [marker],
-          }),
-        }));
+        return marker;
       });
+      const vectorLayer = new VectorLayer({
+        source: new VectorSource({
+          features,
+        }),
+      });
+      map.addLayer(vectorLayer);
     }
   }, [map, locations]);
 
   return (
     <div>
-      <div id="map" className="map" style={{ height: '90vh', width: '100%' }}></div>
+      <div id="map" className="map"></div>
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
-        {apiConnected ? 'Connected to API' : 'Not connected to API'}
+        {locations.length > 0 ? 'Connected to API' : 'Not connected to API'}
       </div>
     </div>
   );

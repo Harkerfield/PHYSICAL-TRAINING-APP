@@ -1,0 +1,53 @@
+/* Move NavBar-related styles to NavBar.css */
+
+.navbar {
+  /* position: fixed; */
+  top: 0;
+  width: 100vw;
+  z-index: 1000;
+  background-color: #1e293b;
+  /* padding: 10px 0; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: width 0.3s ease;
+}
+
+.navbar-content {
+  width: 100%;
+  align-items: center;
+  color: #ffffff;
+}
+
+.navbar h1 {
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+}
+
+.navbar h2 {
+  color: #ffffff;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.nav-links {
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+}
+
+.navbar .link {
+  padding: 2px 10px;
+  align-items: center;
+  cursor: pointer;
+  color: #d1d5db;
+  margin-right: 20px;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar .link:hover {
+  color: #ffffff;
+}

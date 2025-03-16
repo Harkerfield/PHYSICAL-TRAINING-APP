@@ -1,0 +1,48 @@
+/* Move teams-related styles to Teams.css */
+
+.current-team-info {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.team-rankings {
+  margin-top: 20px;
+}
+
+.team-rankings table {
+  width: 100%;
+  border-collapse: collapse;
+ }
+
+.team-rankings table th,
+.team-rankings table td {
+  padding: 10px;
+  text-align: center;
+}
+
+.team-rankings table th {
+  background: #ff69b4db; /* Hyperwave pink for table header */
+}
+
+.team-rankings table tr:nth-child(even) {
+  background-color: #ffdd57db; /* Hyperwave yellow for even rows */
+}
+
+.team-rankings table tr:nth-child(odd) {
+  background-color: #1e90ffdb; /* Hyperwave blue for odd rows */
+}
+
+.team-rankings table tr:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Light grey for hovered row */
+}
+
+.debug-info {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}

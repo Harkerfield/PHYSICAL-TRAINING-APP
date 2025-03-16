@@ -1,35 +1,10 @@
+/* Remove map-related styles as they have been moved to Map.css */
+/* Remove teams-related styles as they have been moved to Teams.css */
+
 .game-container {
-  padding: 20px;
+  max-width: 90w;
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
-  max-width: 800px;
-}
-
-.current-team-info {
-  margin: 20px 0;
-  padding: 10px;
-  background: #f4f4f4;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.team-rankings {
-  margin-top: 20px;
-}
-
-.team-rankings table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.team-rankings table th, .team-rankings table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.team-rankings table th {
-  background: #f4f4f4;
 }

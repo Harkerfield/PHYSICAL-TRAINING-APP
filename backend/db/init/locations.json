@@ -1,32 +1,173 @@
 [
-  {
-    "name": "Kadena Air Base Gate 1",
-    "latitude": 26.3555,
-    "longitude": 127.7681,
-    "points": 10
-  },
-  {
-    "name": "Kadena Air Base Gate 2",
-    "latitude": 26.3575,
-    "longitude": 127.7691,
-    "points": 15
-  },
-  {
-    "name": "Kadena Air Base Gate 3",
-    "latitude": 26.3595,
-    "longitude": 127.7701,
-    "points": 20
-  },
-  {
-    "name": "Kadena Air Base Gate 4",
-    "latitude": 26.3615,
-    "longitude": 127.7711,
-    "points": 25
-  },
-  {
-    "name": "Kadena Air Base Gate 5",
-    "latitude": 26.3635,
-    "longitude": 127.7721,
-    "points": 30
-  }
+    {
+        "name": "Ukamajī Naval Battery Remains",
+        "description": "Foundations and tunnels built for the Japanese Navy by January 1945, including nine cannons, underground ammunition storage, and an observation post. Located within the Kadena Golf Course area; some tunnels are partly collapsed.",
+        "latitude": 26.3550,
+        "longitude": 127.7690,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Ufusakubaru Old Tomb Complex",
+        "description": "A group of seventeen old tombs from the Early Modern and Modern Periods, built by the people of Hanzan, Hamagawa, and Irei, offering insights into traditional Okinawan burial practices.",
+        "latitude": 26.3575,
+        "longitude": 127.7675,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Sunabe Sākubaru Shell Mound",
+        "description": "Discovered in 1980, this site revealed Late Kaizuka Period pottery sherds and two stone axes, indicating early human activity in the region.",
+        "latitude": 26.3520,
+        "longitude": 127.7550,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Kadena Air-Raid Surveillance Post Remains",
+        "description": "Foundations of a surveillance post and part of its fence, serving as a reminder of the island's militarized past during World War II.",
+        "latitude": 26.3545,
+        "longitude": 127.7605,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Kumayā Cave Site",
+        "description": "A natural cave approximately 40 meters long that served as an air-raid shelter for about 300 people during World War II. It also yielded remains from various periods, including pottery and human remains.",
+        "latitude": 26.3580,
+        "longitude": 127.7620,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Irei-īmuibaru Archaeological Site",
+        "description": "Contains remains of terraced fields with stone retaining walls dating back to the 12th to 16th centuries, offering a glimpse into the agricultural practices of the time.",
+        "latitude": 26.3560,
+        "longitude": 127.7610,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Shichashīdu Settlement Remains",
+        "description": "Remains of stone walls of a pre-WWII residence, including traditional Okinawan pigpen latrines (fūru).",
+        "latitude": 26.3530,
+        "longitude": 127.7580,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Hanja-nu-wī Settlement Remains",
+        "description": "Site includes remains of several residences and roads, as well as the pre-war Chatan Normal School.",
+        "latitude": 26.3540,
+        "longitude": 127.7590,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Uwīsedō/Shichasedō Area Old Tomb Complex",
+        "description": "Group of 186 tombs, mostly built by residents of Uwīsedō and Shichasedō, dating back to the mid-17th century.",
+        "latitude": 26.3555,
+        "longitude": 127.7605,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Yamagābaru Old Tomb Complex",
+        "description": "Group of old tombs along Shirahi-gawa River, with funerary urns dating between 1715 and 1725.",
+        "latitude": 26.3565,
+        "longitude": 127.7615,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Ryukyu Turtle-Back Tombs",
+        "description": "Traditional Ryukyu turtle-back tombs, known as 'kame kōbaka,' reflecting Okinawan ancestral traditions.",
+        "latitude": 26.3552,
+        "longitude": 127.7648,
+        "references": [
+            "https://hopsacrosstheglobe.wordpress.com/2015/01/30/historic-sites-on-kadena-air-base-okinawa/"
+        ]
+    },
+    {
+        "name": "Kadena Hospital Cave",
+        "description": "A sealed-off cave adjacent to Kadena AB's golf course, historically used as a Japanese hospital during World War II.",
+        "latitude": 26.3548,
+        "longitude": 127.7650,
+        "references": [
+            "https://hopsacrosstheglobe.wordpress.com/2015/01/30/historic-sites-on-kadena-air-base-okinawa/"
+        ]
+    },
+    {
+        "name": "Abandoned Tennis Courts",
+        "description": "Disused tennis courts within Kadena AB, now overtaken by nature, offering a unique glimpse into the passage of time on the base.",
+        "latitude": 26.3555,
+        "longitude": 127.7630,
+        "references": [
+            "https://www.tiktok.com/discover/abandoned-tennis-court"
+        ]
+    },
+    {
+        "name": "Okinawan Ancestral Tombs",
+        "description": "Tombs maintained in collaboration with local communities, especially during the annual Shimi festival, honoring ancestors.",
+        "latitude": 26.3560,
+        "longitude": 127.7625,
+        "references": [
+            "https://www.af.mil/News/Article-Display/Article/585227/local-nationals-visit-family-tombs-at-kadena/"
+        ]
+    },
+    {
+        "name": "Noguni Sokan Shrine",
+        "description": "A shrine built in 1955 to commemorate the introduction of the sweet potato to Okinawa, featuring Chinese and Ryukyu architectural designs and stone Shishi (lion) statues.",
+        "latitude": 26.3602,
+        "longitude": 127.7678,
+        "references": [
+            "https://www.town.kadena.okinawa.jp/english/around_the_kadena_town.html"
+        ]
+    },
+    {
+        "name": "Peace Garden Memorial",
+        "description": "A memorial within Kadena Air Base honoring those who lost their lives during the Battle of Okinawa. It serves as a place of reflection and remembrance for military personnel and civilians.",
+        "latitude": 26.3545,
+        "longitude": 127.7642,
+        "references": [
+            "https://www.dvidshub.net/image/992628/okinawa-city-citizens-tour-kadenas-historical-sites"
+        ]
+    },
+    {
+        "name": "Shirahi-gawa River Historical Area",
+        "description": "Area along the Shirahi-gawa River with historical tomb complexes and settlement remains, showing centuries of habitation and Okinawan culture.",
+        "latitude": 26.3568,
+        "longitude": 127.7600,
+        "references": [
+            "https://en.wikipedia.org/wiki/Chatan_Town_cultural_and_natural_assets"
+        ]
+    },
+    {
+        "name": "Kadena Flightline Viewing Area",
+        "description": "While operational, it has historical value due to Kadena AB’s role in the Korean War, Vietnam War, and Cold War air operations.",
+        "latitude": 26.3553,
+        "longitude": 127.7708,
+        "references": [
+            "https://kadena.af.mil"
+        ]
+    },
+    {
+        "name": "Old Japanese Guard Posts",
+        "description": "Remnants of Japanese guard posts and fortifications built during WWII, found scattered across certain parts of Kadena AB.",
+        "latitude": 26.3556,
+        "longitude": 127.7689,
+        "references": [
+            "https://hopsacrosstheglobe.wordpress.com/2015/01/30/historic-sites-on-kadena-air-base-okinawa/"
+        ]
+    }
 ]

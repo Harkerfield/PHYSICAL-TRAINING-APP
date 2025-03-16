@@ -5,6 +5,8 @@ const cors = require('cors');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const pool = require('./db');
+const path = require('path');
+const { authenticate } = require('./middleware');
 
 const escapePgIdentifier = (value) => value.replace(/"/g, '""');
 
@@ -50,16 +52,35 @@ app.use(
   })
 );
 
+// Middleware to log all requests and responses
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  const originalSend = res.send;
+  res.send = function (body) {
+    originalSend.call(this, body);
+  };
+  next();
+});
+
+// Serve the uploads directory as a static directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const userRouter = require('./routes/user.route.js');
+const gameRouter = require('./routes/game.route.js');
 app.use('/user', userRouter);
+app.use('/game', gameRouter);
 
 app.get('/api/routes', (req, res) => {
   const routes = [
     { path: '/user/teams', method: 'GET', protected: false },
     { path: '/user/register-team', method: 'POST', protected: false },
     { path: '/user/login-team', method: 'POST', protected: false },
+    { path: '/user/logout', method: 'POST', protected: false },
     { path: '/user/update-points', method: 'PUT', protected: true },
-    { path: '/user/submit-location', method: 'POST', protected: true }
+    { path: '/user/submit-location', method: 'POST', protected: true },
+    { path: '/user/update-location', method: 'PUT', protected: true },
+    { path: '/user/upload', method: 'POST', protected: true },
+    { path: '/user/fetch-user', method: 'POST', protected: true }
   ];
   res.json(routes);
 });
@@ -67,6 +88,13 @@ app.get('/api/routes', (req, res) => {
 app.get('/', (req, res) => {
   console.log(app);
   res.status(200).json('server running');
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+  console.error('Stack:', err.stack);
+  res.status(500).json({ error: err.message });
 });
 
 module.exports = app;

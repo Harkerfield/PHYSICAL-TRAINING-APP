@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import '../styles/App.css';
 
 const LocationPassword = () => {
   const [locationPassword, setLocationPassword] = useState('');
