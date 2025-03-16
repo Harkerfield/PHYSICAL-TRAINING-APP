@@ -36,10 +36,7 @@ const MapComponent = ({ locations }) => {
 
     const overlay = new Overlay({
       element: overlayContainer,
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250,
-      },
+      autoPan: false, // Disable autoPan by default
     });
 
     overlayCloser.onclick = function () {
@@ -79,17 +76,40 @@ const MapComponent = ({ locations }) => {
 
       map.addLayer(vectorLayer);
 
-      map.on('pointermove', function (evt) {
-        const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+      const displayFeatureInfo = (pixel, autoPan = false) => {
+        const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
           return feature;
         });
         if (feature) {
           const coordinates = feature.getGeometry().getCoordinates();
           overlay.setPosition(coordinates);
           document.getElementById('popup-content').innerHTML = `${feature.get('name')} - ${feature.get('points')} points`;
+          if (autoPan) {
+            overlay.getOptions().autoPan = {
+              animation: {
+                duration: 250,
+              },
+            };
+          } else {
+            overlay.getOptions().autoPan = false;
+          }
         } else {
           overlay.setPosition(undefined);
         }
+      };
+
+      map.on('pointermove', function (evt) {
+        if (evt.dragging) {
+          overlay.setPosition(undefined);
+          return;
+        }
+        const pixel = map.getEventPixel(evt.originalEvent);
+        displayFeatureInfo(pixel);
+      });
+
+      map.on('click', function (evt) {
+        const pixel = map.getEventPixel(evt.originalEvent);
+        displayFeatureInfo(pixel, true); // Enable autoPan for click events
       });
     }
   }, [map, locations, overlay]);
