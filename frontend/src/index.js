@@ -26,10 +26,8 @@ const history = createBrowserHistory({ v7_startTransition: true, v7_relativeSpla
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
-  <React.StrictMode>
-    <HistoryRouter history={history}>
-      <div style={backgroundStyle}></div>
-      <App srvPort={srvPort} />
-    </HistoryRouter>
-  </React.StrictMode>
+  <HistoryRouter history={history}>
+    <div style={backgroundStyle}></div>
+    <App srvPort={srvPort} />
+  </HistoryRouter>
 );

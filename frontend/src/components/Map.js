@@ -9,10 +9,12 @@ import Point from 'ol/geom/Point';
 import { Icon, Style } from 'ol/style';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import Overlay from 'ol/Overlay';
 import '../styles/Map.css';
 
 const MapComponent = ({ locations }) => {
   const [map, setMap] = useState(null);
+  const [overlay, setOverlay] = useState(null);
 
   useEffect(() => {
     const initialMap = new Map({
@@ -27,7 +29,28 @@ const MapComponent = ({ locations }) => {
         zoom: 15,
       }),
     });
+
+    const overlayContainer = document.getElementById('popup');
+    const overlayContent = document.getElementById('popup-content');
+    const overlayCloser = document.getElementById('popup-closer');
+
+    const overlay = new Overlay({
+      element: overlayContainer,
+      autoPan: true,
+      autoPanAnimation: {
+        duration: 250,
+      },
+    });
+
+    overlayCloser.onclick = function () {
+      overlay.setPosition(undefined);
+      overlayCloser.blur();
+      return false;
+    };
+
+    initialMap.addOverlay(overlay);
     setMap(initialMap);
+    setOverlay(overlay);
   }, []);
 
   useEffect(() => {
@@ -36,27 +59,48 @@ const MapComponent = ({ locations }) => {
         const [longitude, latitude] = location.coordinates;
         const marker = new Feature({
           geometry: new Point(fromLonLat([longitude, latitude])),
+          name: location.name,
+          points: location.points,
         });
         marker.setStyle(new Style({
           image: new Icon({
-            src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="10" fill="red"/></svg>',
+            src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 22,22 2,22" fill="red"/></svg>',
             scale: 1,
           }),
         }));
         return marker;
       });
+
       const vectorLayer = new VectorLayer({
         source: new VectorSource({
           features,
         }),
       });
+
       map.addLayer(vectorLayer);
+
+      map.on('pointermove', function (evt) {
+        const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+          return feature;
+        });
+        if (feature) {
+          const coordinates = feature.getGeometry().getCoordinates();
+          overlay.setPosition(coordinates);
+          document.getElementById('popup-content').innerHTML = `${feature.get('name')} - ${feature.get('points')} points`;
+        } else {
+          overlay.setPosition(undefined);
+        }
+      });
     }
-  }, [map, locations]);
+  }, [map, locations, overlay]);
 
   return (
     <div>
       <div id="map" className="map"></div>
+      <div id="popup" className="ol-popup">
+        <a href="#" id="popup-closer" className="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
         {locations.length > 0 ? 'Connected to API' : 'Not connected to API'}
       </div>
