@@ -8,10 +8,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Route to get all locations
 router.get('/locations', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name, latitude, longitude FROM locations');
+    const result = await pool.query('SELECT id, name, points, latitude, longitude FROM locations');
     const locations = result.rows.map(row => ({
       id: row.id,
       name: row.name,
+      points: row.points,
       coordinates: [row.longitude, row.latitude]
     }));
     res.json(locations);
@@ -118,6 +119,19 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
       [teamId]
     );
     res.json({ team: result.rows[0] });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Route to get all point transactions and map them to team id and name
+router.get('/points-transactions', authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT pt.team_id, t.name as team_name, pt.source, pt.points, pt.created_at FROM points_transactions pt JOIN teams t ON pt.team_id = t.id'
+    );
+    res.json(result.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
