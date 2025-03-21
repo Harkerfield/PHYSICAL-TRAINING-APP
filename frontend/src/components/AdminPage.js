@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { appContext } from '../App';
 import '../styles/App.css';
 import '../styles/Modal.css';
+import '../styles/TableStyles.css'; // Import the new TableStyles.css
 
 const AdminPage = () => {
   const { team, srvPort } = useContext(appContext);
