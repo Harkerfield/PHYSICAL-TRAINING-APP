@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { appContext } from '../App';
 import '../styles/Teams.css';
+import '../styles/TableStyles.css'; // Import the new TableStyles.css
 
 const TeamsPage = () => {
   const [teams, setTeams] = useState([]);
@@ -10,7 +11,7 @@ const TeamsPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/user/teams`, {
+        const response = await fetch(`http://localhost:${srvPort}/team/teams`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -22,7 +23,7 @@ const TeamsPage = () => {
         // Assuming the current team is stored in localStorage
         const teamId = localStorage.getItem('teamId');
         if (teamId) {
-          const teamResponse = await fetch(`http://localhost:${srvPort}/user/teams/${teamId}`, {
+          const teamResponse = await fetch(`http://localhost:${srvPort}/team/teams/${teamId}`, {
             method: 'GET',
             credentials: 'include',
           });
@@ -44,7 +45,7 @@ const TeamsPage = () => {
   return (
     <div className="team-rankings">
       <h2>Team Rankings</h2>
-      <table>
+      <table className="table"> {/* Apply the table class */}
         <thead>
           <tr>
             <th>Rank</th>

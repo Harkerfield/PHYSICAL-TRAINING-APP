@@ -1,37 +1,49 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { appContext } from '../App';
 
 const Logout = () => {
-  const { setUser, srvPort } = useContext(appContext);
+  const { setTeam, srvPort } = useContext(appContext);
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/user/logout`, {
+        const response = await fetch(`http://localhost:${srvPort}/team/logout`, {
           method: 'POST',
           credentials: 'include',
         });
         if (response.ok) {
           console.log('Logged out successfully', response);
-          localStorage.removeItem('user');
-          setUser(null);
+          localStorage.removeItem('team');
+          setTeam(null);
           navigate('/');
         } else {
-          console.error('Failed to log out');
+          const errorMessage = await response.text();
+          console.error('Failed to log out:', errorMessage);
+
+
+          localStorage.removeItem('team');
+          setTeam(null);
+          navigate('/');
+
+          setError(`Failed to log out: ${errorMessage}`);
         }
       } catch (error) {
         console.error('Error logging out:', error);
+
+        setError('Error logging out. Please try again.');
       }
     };
-   handleLogout();
-  }, []);
+    handleLogout();
+  }, [srvPort, setTeam, navigate]);
 
   return (
     <div>
       <h1>Logging out...</h1>
       <p>You are being logged out. Please wait...</p>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };

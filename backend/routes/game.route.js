@@ -5,23 +5,6 @@ const { authenticate } = require('../middleware');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Route to get all locations
-router.get('/locations', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT id, name, points, latitude, longitude FROM locations');
-    const locations = result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      points: row.points,
-      coordinates: [row.longitude, row.latitude]
-    }));
-    res.json(locations);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 // Update team points route
 router.put('/update-points', authenticate, async (req, res) => {
   const { teamId, points, source } = req.body;
@@ -69,7 +52,7 @@ router.post('/submit-location', authenticate, async (req, res) => {
 // Admin route to add custom points
 router.post('/add-points', authenticate, async (req, res) => {
   const { teamId, points, source } = req.body;
-  if (!req.session.user.isAdmin) {
+  if (!req.session.team.isAdmin) {
     return res.status(403).json({ error: 'Forbidden' });
   }
   try {

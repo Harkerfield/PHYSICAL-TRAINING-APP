@@ -5,7 +5,7 @@ import "../styles/Modal.css";
 
 const SignUp = ({ closeModal }) => {
   const navigate = useNavigate();
-  const { srvPort, user, setUser } = React.useContext(appContext);
+  const { srvPort, team, setTeam } = React.useContext(appContext);
   const [message, setMessage] = useState("");
 
   //onSubmit handler for registering a new team
@@ -20,14 +20,14 @@ const SignUp = ({ closeModal }) => {
       credentials: "include",
       body: JSON.stringify(formJSON),
     };
-    fetch(`http://localhost:${srvPort}/user/register-team`, requestOptions)
+    fetch(`http://localhost:${srvPort}/team/register-team`, requestOptions)
       .then((response) => response.json())
       .then((teamData) => {
         if ("error" in teamData) {
           setMessage(teamData.error);
         } else {
           setMessage("Registration Successful");
-          setUser(teamData);
+          setTeam(teamData);
           navigate("/Game");
         }
       });

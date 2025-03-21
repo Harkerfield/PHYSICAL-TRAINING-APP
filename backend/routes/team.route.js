@@ -44,7 +44,7 @@ router.post('/login-team', async (req, res) => {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
     const token = jwt.sign({ id: team.id }, process.env.SESSION_SECRET, { expiresIn: '1h' });
-    req.session.user = { id: team.id, name: team.name, isAdmin: team.is_admin };
+    req.session.team = { id: team.id, name: team.name, isAdmin: team.is_admin };
     res.json({ token, teamId: team.id, name: team.name, isAdmin: team.is_admin });
   } catch (err) {
     console.error(err.message);
@@ -97,12 +97,12 @@ router.get('/total-points', async (req, res) => {
   }
 });
 
-// Route to fetch user data
-router.post('/fetch-user', authenticate, async (req, res) => {
-  if (req.session && req.session.user) {
-    res.json(req.session.user);
+// Route to fetch team data
+router.post('/fetch-team', authenticate, async (req, res) => {
+  if (req.session && req.session.team) {
+    res.json(req.session.team);
   } else {
-    res.status(401).json({ error: 'User not authenticated' });
+    res.status(401).json({ error: 'Team not authenticated' });
   }
 });
 

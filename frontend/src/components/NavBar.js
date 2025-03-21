@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { appContext } from "../App.js";
 import '../styles/NavBar.css';
 
@@ -7,11 +7,13 @@ import { RiDashboardFill, RiComputerLine } from "react-icons/ri";
 
 function NavBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(true);
-  const { user, setUser, srvPort } = useContext(appContext);
+  const { team, setteam, srvPort } = useContext(appContext);
   const [links, setLinks] = useState([]);
+  const currentRoute = location.pathname.replace('/', '').replace(/-/g, ' ').toUpperCase(); // Format to all caps
 
-  useEffect(() => { console.log("user", user) }, []);
+  useEffect(() => { console.log("team", team) }, []);
 
 
   useEffect(() => {
@@ -20,23 +22,24 @@ function NavBar() {
       { name: "Game", to: "/game", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Teams", to: "/teams", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Logout", to: "/logout", icon: <RiDashboardFill />, protection: "loggedIn" },
-      { name: "Admin", to: "/admin", icon: <RiDashboardFill />, protection: "admin" }
+      { name: "Admin", to: "/admin", icon: <RiDashboardFill />, protection: "admin" },
+      { name: "Locations", to: "/locations", icon: <RiDashboardFill />, protection: "admin" }
     ];
 
     // Function to check if a link should be displayed
     const isLinkVisible = (link) => {
-      if (!user) return false
-      console.log("user nav tester", user)
+      if (!team) return false
+      console.log("team nav tester", team)
       if (link.protection === "none") return true;
-      if (link.protection === "loggedIn" && user.name) return true;
-      if (link.protection === "admin" && user.isAdmin) return true;
+      if (link.protection === "loggedIn" && team.name) return true;
+      if (link.protection === "admin" && team.isAdmin) return true;
       return false;
     };
     // links.filter(isLinkVisible)
 
     setLinks(links.filter(isLinkVisible));
 
-  }, [user]);
+  }, [team]);
 
 
   return (
@@ -44,11 +47,8 @@ function NavBar() {
       <div className="navbar-content">
         <div>
           <h1>
-            18 CS PT Game
+            18 CS {currentRoute? <>- {currentRoute}: {team.name}</> : ""}
           </h1>
-          <h2>
-             {user? <>Team: {user.name}</>: ""}
-          </h2>
         </div>
         <hr />
         <div className="nav-links">

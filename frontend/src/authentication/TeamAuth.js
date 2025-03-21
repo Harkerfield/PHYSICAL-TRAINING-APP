@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { appContext } from "../App.js";
 import { Link, useNavigate } from "react-router-dom";
-import SignUp from "./SignUp";
+import SignUp from "./SignUp.js";
 
-const UserAuth = () => {
+const TeamAuth = () => {
   const navigate = useNavigate();
-  const { srvPort, user, setUser } = React.useContext(appContext);
+  const { srvPort, team, setTeam } = React.useContext(appContext);
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedTeam = localStorage.getItem("team");
+    if (storedTeam) {
+      setTeam(JSON.parse(storedTeam));
       navigate("/game");
     }
-  }, [navigate, setUser]);
+  }, [navigate, setTeam]);
 
   // onSubmit handler for logging in a team
   const handleLogin = (e) => {
@@ -29,15 +29,15 @@ const UserAuth = () => {
       credentials: "include",
       body: JSON.stringify(formJSON),
     };
-    fetch(`http://localhost:${srvPort}/user/login-team`, requestOptions)
+    fetch(`http://localhost:${srvPort}/team/login-team`, requestOptions)
       .then((response) => response.json())
       .then((teamData) => {
         if ("error" in teamData) {
           setMessage(teamData.error);
         } else {
           setMessage("Login Successful");
-          setUser(teamData);
-          localStorage.setItem("user", JSON.stringify(teamData)); // Set local storage
+          setTeam(teamData);
+          localStorage.setItem("team", JSON.stringify(teamData)); // Set local storage
           navigate("/game");
         }
       });
@@ -123,4 +123,4 @@ const UserAuth = () => {
   );
 };
 
-export default UserAuth;
+export default TeamAuth;

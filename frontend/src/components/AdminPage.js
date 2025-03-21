@@ -6,7 +6,7 @@ import '../styles/App.css';
 import '../styles/Modal.css';
 
 const AdminPage = () => {
-  const { user, srvPort } = useContext(appContext);
+  const { team, srvPort } = useContext(appContext);
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [points, setPoints] = useState('');
@@ -21,7 +21,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.get(`http://localhost:${srvPort}/user/teams`);
+        const response = await axios.get(`http://localhost:${srvPort}/team/teams`);
         setTeams(response.data);
       } catch (error) {
         console.error('Error fetching teams:', error);
@@ -35,14 +35,14 @@ const AdminPage = () => {
   const handleAddPoints = async (e) => {
     e.preventDefault();
     setMessage('');
-  // setSource(`Admin team ${user} gave points for: ${source}`);
+  // setSource(`Admin team ${team} gave points for: ${source}`);
     try {
       const response = await fetch(`http://localhost:${srvPort}/game/add-points`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ teamId: selectedTeam.id, points, source: `Admin team ${user.name} gave points for: ${source}` }),
+        body: JSON.stringify({ teamId: selectedTeam.id, points, source: `Admin team ${team.name} gave points for: ${source}` }),
         credentials: 'include',
       });
       if (!response.ok) {
@@ -50,6 +50,13 @@ const AdminPage = () => {
       }
       const data = await response.json();
       setMessage(`${data.message} to team "${data.teamName}" for ${data.points} points`);
+      setTeams((prevTeams) =>
+        prevTeams.map((team) =>
+          team.id === selectedTeam.id ? { ...team, totalPoints: parseInt(team.totalPoints) + parseInt(points) } : team
+        )
+      );
+      setPoints('');
+      setSource('');
       setIsModalOpen(false);
     } catch (err) {
       setMessage(err.message);

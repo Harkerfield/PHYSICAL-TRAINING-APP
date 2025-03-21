@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-import UserAuth from './authentication/UserAuth.js';
+import TeamAuth from './authentication/TeamAuth.js';
 import SignUp from './authentication/SignUp.js';
 import Logout from './authentication/Logout.js';
 import NavBar from './components/NavBar.js';
@@ -8,12 +8,13 @@ import TeamsPage from './components/TeamsPage';
 import './styles/App.css';
 import React, { useState, useEffect, useContext } from 'react';
 import AdminPage from './components/AdminPage.js';
+import locationPage from './components/LocationPage.js';
 
 export const appContext = React.createContext();
 
 const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const { user } = useContext(appContext);
-  return user && user.name ? (
+  const { team } = useContext(appContext);
+  return team && team.name ? (
     <Component {...rest} />
   ) : (
     <Navigate to="/" />
@@ -21,25 +22,25 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
 };
 
 function App({ srvPort }) {
-  const [user, setUser] = useState({});
+  const [team, setTeam] = useState({});
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Load user state from local storage
-    const storedUser = localStorage.getItem('user');
-    console.log('storedUser', storedUser);
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    // Load team state from local storage
+    const storedTeam = localStorage.getItem('team');
+    console.log('storedTeam', storedTeam);
+    if (storedTeam) {
+      setTeam(JSON.parse(storedTeam));
       navigate('/game');
     }
-  }, [setUser]);
+  }, [setTeam]);
 
   useEffect(() => {
-    if (user && user.name) {
-      // Save user state to local storage
-      localStorage.setItem('user', JSON.stringify(user));
-      fetch(`http://localhost:${srvPort}/user/fetch-user`, {
+    if (team && team.name) {
+      // Save team state to local storage
+      localStorage.setItem('team', JSON.stringify(team));
+      fetch(`http://localhost:${srvPort}/team/fetch-team`, {
         method: 'POST',
         credentials: 'include', // Include credentials (cookies)
         headers: {
@@ -54,7 +55,7 @@ function App({ srvPort }) {
         })
         .then(data => {
           console.log(data);
-          setUser(data);
+          setTeam(data);
         })
         .catch(error => {
           console.error('There was a problem with the fetch operation:', error);
@@ -63,18 +64,19 @@ function App({ srvPort }) {
   }, []);
 
   return (
-    <appContext.Provider value={{ srvPort, user, setUser }}>
+    <appContext.Provider value={{ srvPort, team, setTeam }}>
       <NavBar />
       <section>
         <div>
           <Routes>
             <Route exact path="/game" element={<ProtectedRoute element={Game} />} />
             <Route exact path="/admin" element={<ProtectedRoute element={AdminPage} />} />
-            <Route exact path="/" element={<UserAuth />} />
-            <Route path="/login" element={<UserAuth />} />
+            <Route exact path="/locations" element={<ProtectedRoute element={locationPage} />} />
+            <Route exact path="/" element={<TeamAuth />} />
+            <Route path="/login" element={<TeamAuth />} />
             <Route path="/logout" element={<Logout />} />
             <Route exact path="/teams" element={<ProtectedRoute element={TeamsPage} />} />
-            <Route path="*" element={<UserAuth />} />
+            <Route path="*" element={<TeamAuth />} />
           </Routes>
         </div>
       </section>

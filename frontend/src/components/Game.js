@@ -19,7 +19,7 @@ const Game = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/locations`, {
+        const response = await fetch(`http://localhost:${srvPort}/locations`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -45,7 +45,7 @@ const Game = () => {
           const teamId = localStorage.getItem('teamId');
           if (teamId) {
             try {
-              await fetch('/api/update-location', {
+              await fetch('http://localhost:${srvPort}/locations', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -65,25 +65,25 @@ const Game = () => {
       }
     };
 
-    const handleUserGesture = () => {
+    const handleTeamGesture = () => {
       updateLocation();
-      document.removeEventListener('click', handleUserGesture);
+      document.removeEventListener('click', handleTeamGesture);
     };
 
-    document.addEventListener('click', handleUserGesture);
+    document.addEventListener('click', handleTeamGesture);
 
     return () => {
-      document.removeEventListener('click', handleUserGesture);
+      document.removeEventListener('click', handleTeamGesture);
     };
   }, []);
 
   useEffect(() => {
-    const promptUser = () => {
+    const promptTeam = () => {
       setShowPrompt(true);
     };
 
     const randomInterval = Math.random() * (600000 - 300000) + 300000; // Random interval between 5 and 10 minutes
-    const interval = setInterval(promptUser, randomInterval);
+    const interval = setInterval(promptTeam, randomInterval);
     return () => clearInterval(interval);
   }, []);
 

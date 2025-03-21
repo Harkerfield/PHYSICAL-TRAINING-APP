@@ -1,0 +1,26 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table th {
+    background: #ff69b4db;
+    /* Hyperwave pink for table header */
+    text-align: left;
+}
+
+.table tr:nth-child(even) {
+    background-color: #ffdd57db;
+    /* Hyperwave yellow for even rows */
+}
+
+.table tr:nth-child(odd) {
+    background-color: #1e90ffdb;
+    /* Hyperwave blue for odd rows */
+}

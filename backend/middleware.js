@@ -1,9 +1,9 @@
 // Authentication middleware
 const authenticate = (req, res, next) => {
-  if (req.session && req.session.user) {
+  if (req.session && req.session.team) {
     next();
   } else {
-    res.status(401).json({ error: 'User not authenticated' });
+    res.status(401).json({ error: 'Team not authenticated' });
   }
 };
 
