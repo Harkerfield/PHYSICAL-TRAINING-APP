@@ -21,6 +21,7 @@ function NavBar() {
     const links = [
       { name: "Game", to: "/game", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Teams", to: "/teams", icon: <RiDashboardFill />, protection: "loggedIn" },
+      { name: "My Team", to: "/my-team", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Logout", to: "/logout", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Admin", to: "/admin", icon: <RiDashboardFill />, protection: "admin" },
       { name: "Locations", to: "/locations", icon: <RiDashboardFill />, protection: "admin" }

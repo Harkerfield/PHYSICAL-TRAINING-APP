@@ -10,17 +10,17 @@
 }
 
 .table th {
-    background: #ff69b4db;
-    /* Hyperwave pink for table header */
+    background: #8a2be2db;
+    /* Cooler blue for table header */
     text-align: left;
 }
 
 .table tr:nth-child(even) {
-    background-color: #ffdd57db;
-    /* Hyperwave yellow for even rows */
+    background-color: #7fffd4db;
+    /* Cooler aquamarine for even rows */
 }
 
 .table tr:nth-child(odd) {
-    background-color: #1e90ffdb;
-    /* Hyperwave blue for odd rows */
+    background-color: #4682b4db;
+    /* Cooler steel blue for odd rows */
 }

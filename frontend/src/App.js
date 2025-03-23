@@ -9,6 +9,7 @@ import './styles/App.css';
 import React, { useState, useEffect, useContext } from 'react';
 import AdminPage from './components/AdminPage.js';
 import locationPage from './components/LocationPage.js';
+import MyTeamsPage from './components/MyTeamsPage';
 
 export const appContext = React.createContext();
 
@@ -76,6 +77,7 @@ function App({ srvPort }) {
             <Route path="/login" element={<TeamAuth />} />
             <Route path="/logout" element={<Logout />} />
             <Route exact path="/teams" element={<ProtectedRoute element={TeamsPage} />} />
+            <Route exact path="/my-team" element={<ProtectedRoute element={MyTeamsPage} />} />
             <Route path="*" element={<TeamAuth />} />
           </Routes>
         </div>

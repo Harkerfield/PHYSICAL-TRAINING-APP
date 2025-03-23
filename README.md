@@ -7,37 +7,60 @@ The Physical Training App is a full-stack application designed for a physical tr
 ```
 physical-training-app
 ├── backend
-│   ├── src
-│   │   ├── app.js
-│   │   ├── db.js
-│   │   ├── routes
-│   │   │   ├── team.route.js
-│   │   │   ├── location.route.js
-│   │   │   └── scan.route.js
-│   │   └── controllers
-│   │       ├── team.controller.js
-│   │       ├── location.controller.js
-│   │       └── scan.controller.js
+│   ├── app.js
+│   ├── db.js
+│   ├── Dockerfile
+│   ├── index.js
+│   ├── middleware.js
 │   ├── package.json
-│   ├── .env
-│   └── README.md
+│   ├── routes
+│   │   ├── auth.route.js
+│   │   ├── game.route.js
+│   │   ├── locations.route.js
+│   │   └── team.route.js
+│   └── db
+│       ├── Dockerfile
+│       └── init
+│           ├── init.sql
+│           └── locations.json
 ├── frontend
+│   ├── Dockerfile
+│   ├── package.json
 │   ├── public
 │   │   └── index.html
-│   ├── src
-│   │   ├── components
-│   │   │   ├── Map.js
-│   │   │   ├── TeamDashboard.js
-│   │   │   ├── AdminPage.js
-│   │   │   └── Login.js
-│   │   ├── App.js
-│   │   ├── index.js
-│   │   └── styles
-│   │       └── App.css
-│   ├── package.json
-│   └── README.md
-├── README.md
-└── .gitignore
+│   └── src
+│       ├── App.js
+│       ├── index.js
+│       ├── assets
+│       │   └── cyber-shisa.jpeg
+│       ├── authentication
+│       │   ├── Logout.js
+│       │   ├── SignUp.js
+│       │   └── TeamAuth.js
+│       ├── components
+│       │   ├── AdminPage.js
+│       │   ├── Game.js
+│       │   ├── LocationPage.js
+│       │   ├── LocationPassword.js
+│       │   ├── Map.js
+│       │   ├── Modal.js
+│       │   ├── MyTeamsPage.js
+│       │   ├── NavBar.js
+│       │   └── TeamsPage.js
+│       └── styles
+│           ├── App.css
+│           ├── common.css
+│           ├── Game.css
+│           ├── LocationPage.css
+│           ├── Map.css
+│           ├── Modal.css
+│           ├── NavBar.css
+│           ├── SignUp.css
+│           ├── TableStyles.css
+│           └── Teams.css
+├── docker-compose.txt
+├── docker-compose.yaml
+└── README.md
 ```
 
 ## Backend
@@ -59,6 +82,7 @@ The backend is built using Node.js and Express. It handles API requests, manages
 - **GET /api/locations**: Retrieve all locations.
 - **POST /api/scans**: Process a scan request (protected).
 - **Team Routes**: Manage team-related operations.
+- **Auth Routes**: Manage authentication-related operations.
 
 ## Frontend
 The frontend is built using React. It provides a dynamic user interface for participants and administrators.

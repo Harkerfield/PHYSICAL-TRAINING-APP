@@ -29,7 +29,7 @@ const TeamAuth = () => {
       credentials: "include",
       body: JSON.stringify(formJSON),
     };
-    fetch(`http://localhost:${srvPort}/team/login-team`, requestOptions)
+    fetch(`http://localhost:${srvPort}/auth/login-team`, requestOptions)
       .then((response) => response.json())
       .then((teamData) => {
         if ("error" in teamData) {

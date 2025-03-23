@@ -22,7 +22,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.get(`http://localhost:${srvPort}/team/teams`);
+        const response = await axios.get(`http://localhost:${srvPort}/team`);
         setTeams(response.data);
       } catch (error) {
         console.error('Error fetching teams:', error);
@@ -75,8 +75,7 @@ const AdminPage = () => {
 
   return (
     <div className="admin-page">
-      <h1>Admin Dashboard</h1>
-      {message && <p>{message}</p>}
+    {message && <p>{message}</p>}
       <h2>Current Scores</h2>
       <table>
         <thead>

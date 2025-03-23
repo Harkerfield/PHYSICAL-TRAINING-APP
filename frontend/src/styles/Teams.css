@@ -11,32 +11,6 @@
   margin-top: 20px;
 }
 
-.team-rankings table {
-  width: 100%;
-  border-collapse: collapse;
- }
-
-.team-rankings table th,
-.team-rankings table td {
-  padding: 10px;
-  text-align: center;
-}
-
-.team-rankings table th {
-  background: #ff69b4db; /* Hyperwave pink for table header */
-}
-
-.team-rankings table tr:nth-child(even) {
-  background-color: #ffdd57db; /* Hyperwave yellow for even rows */
-}
-
-.team-rankings table tr:nth-child(odd) {
-  background-color: #1e90ffdb; /* Hyperwave blue for odd rows */
-}
-
-.team-rankings table tr:hover {
-  background-color: rgba(0, 0, 0, 0.1); /* Light grey for hovered row */
-}
 
 .debug-info {
   background: #f9f9f9;
@@ -45,4 +19,44 @@
   margin: 10px 0;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.my-teams-page {
+  margin: 20px;
+}
+
+.add-member-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-member-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-member-form button {
+  padding: 8px 16px;
+  background-color: #4682b4db; /* Cooler steel blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-member-form button:hover {
+  background-color: #5a9bd3db; /* Lighter steel blue */
+}
+
+.team-members-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.team-members-list li {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
 }

@@ -10,7 +10,7 @@ const Logout = () => {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/team/logout`, {
+        const response = await fetch(`http://localhost:${srvPort}/auth/logout`, {
           method: 'POST',
           credentials: 'include',
         });

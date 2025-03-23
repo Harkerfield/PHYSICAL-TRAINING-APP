@@ -11,7 +11,7 @@ const TeamsPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/team/teams`, {
+        const response = await fetch(`http://localhost:${srvPort}/team`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -23,7 +23,7 @@ const TeamsPage = () => {
         // Assuming the current team is stored in localStorage
         const teamId = localStorage.getItem('teamId');
         if (teamId) {
-          const teamResponse = await fetch(`http://localhost:${srvPort}/team/teams/${teamId}`, {
+          const teamResponse = await fetch(`http://localhost:${srvPort}/team/${teamId}`, {
             method: 'GET',
             credentials: 'include',
           });
@@ -44,8 +44,7 @@ const TeamsPage = () => {
 
   return (
     <div className="team-rankings">
-      <h2>Team Rankings</h2>
-      <table className="table"> {/* Apply the table class */}
+     <table className="table"> {/* Apply the table class */}
         <thead>
           <tr>
             <th>Rank</th>

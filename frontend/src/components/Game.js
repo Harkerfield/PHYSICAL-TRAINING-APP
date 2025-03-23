@@ -116,7 +116,6 @@ const Game = () => {
 
   return (
     <div className="game-container" style={{ width: '100vw', height: '100vh' }}>
-      <h1>Game</h1>
       <button onClick={() => {
         setShowDebug(!showDebug);
         console.log('Debug menu toggled:', !showDebug);
