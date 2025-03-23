@@ -57,6 +57,7 @@ CREATE INDEX "IDX_sessions_expire" ON sessions ("expire");
 CREATE TABLE teams (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,
+    team_members JSON DEFAULT '[]'::json,
     pin_code VARCHAR(10) NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -64,6 +65,7 @@ CREATE TABLE teams (
 
 -- Add current_location field to teams table
 ALTER TABLE teams ADD COLUMN current_location POINT;
+
 
 
 
@@ -87,10 +89,10 @@ CREATE TABLE points_transactions (
 
 
 -- Insert initial team
-INSERT INTO teams (name, pin_code, is_admin) VALUES ('admin', 'admin', TRUE);
-INSERT INTO teams (name, pin_code) VALUES
-('alpha', 'alpha'),
-('bravo', 'bravo'),
-('charlie', 'charlie'),
-('delta', 'delta'),
-('echo', 'echo');
+INSERT INTO teams (name, pin_code, is_admin, team_members) VALUES ('admin', 'admin', TRUE, '[{"id": 1, "firstName": "Joseph", "lastName": "H."}]');
+INSERT INTO teams (name, pin_code, team_members) VALUES
+('alpha', 'alpha', '[{"id": 1, "firstName": "Alpha", "lastName": "One"}, {"id": 2, "firstName": "Alpha", "lastName": "Two"}]'),
+('bravo', 'bravo', '[{"id": 1, "firstName": "Bravo", "lastName": "One"}, {"id": 2, "firstName": "Bravo", "lastName": "Two"}]'),
+('charlie', 'charlie', '[{"id": 1, "firstName": "Charlie", "lastName": "One"}, {"id": 2, "firstName": "Charlie", "lastName": "Two"}]'),
+('delta', 'delta', '[{"id": 1, "firstName": "Delta", "lastName": "One"}, {"id": 2, "firstName": "Delta", "lastName": "Two"}]'),
+('echo', 'echo', '[{"id": 1, "firstName": "Echo", "lastName": "One"}, {"id": 2, "firstName": "Echo", "lastName": "Two"}]');

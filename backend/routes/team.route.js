@@ -12,61 +12,10 @@ const { authenticate } = require('../middleware');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Register team route
-router.post('/register-team', async (req, res) => {
-  const { teamName, pinCode } = req.body;
-  try {
-    const teamExists = await pool.query('SELECT * FROM teams WHERE name = $1', [teamName]);
-    if (teamExists.rows.length > 0) {
-      return res.status(400).json({ error: 'Team name already exists' });
-    }
-    const result = await pool.query(
-      'INSERT INTO teams (name, pin_code) VALUES ($1, $2) RETURNING *',
-      [teamName, pinCode]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Login team route
-router.post('/login-team', async (req, res) => {
-  const { teamName, pinCode } = req.body;
-  try {
-    const result = await pool.query('SELECT * FROM teams WHERE name = $1', [teamName]);
-    if (result.rows.length === 0) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-    const team = result.rows[0];
-    if (team.pin_code !== pinCode) {
-      return res.status(400).json({ error: 'Invalid credentials' });
-    }
-    const token = jwt.sign({ id: team.id }, process.env.SESSION_SECRET, { expiresIn: '1h' });
-    req.session.team = { id: team.id, name: team.name, isAdmin: team.is_admin };
-    res.json({ token, teamId: team.id, name: team.name, isAdmin: team.is_admin });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// Logout route
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to log out' });
-    }
-    res.clearCookie('connect.sid'); // Clear the session cookie
-    res.status(200).json({ message: 'Logged out successfully' });
-  });
-});
-
 // Route to get all teams with their current points
-router.get('/teams', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name FROM teams');
+    const result = await pool.query('SELECT id, name, team_members FROM teams');
     const pointsResult = await pool.query('SELECT team_id, SUM(points) AS total_points FROM points_transactions GROUP BY team_id');
     const pointsMap = pointsResult.rows.reduce((acc, row) => {
       acc[row.team_id] = row.total_points;
@@ -75,9 +24,25 @@ router.get('/teams', async (req, res) => {
     const teams = result.rows.map(row => ({
       id: row.id,
       name: row.name,
+      team_members: row.team_members,
       totalPoints: pointsMap[row.id] || 0,
     }));
     res.json(teams);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Route to get a single team by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT id, name, team_members FROM teams WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+    res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
@@ -97,10 +62,70 @@ router.get('/total-points', async (req, res) => {
   }
 });
 
-// Route to fetch team data
-router.post('/fetch-team', authenticate, async (req, res) => {
+// Route to add a team member
+router.post('/add-team-member', authenticate, async (req, res) => {
+  const { teamId, memberName } = req.body;
+  try {
+    const result = await pool.query('SELECT team_members FROM teams WHERE id = $1', [teamId]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+    const teamMembers = result.rows[0].team_members;
+    teamMembers.push(memberName);
+    await pool.query('UPDATE teams SET team_members = $1 WHERE id = $2', [teamMembers, teamId]);
+    res.status(200).json({ message: 'Team member added successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Route to update a team member
+router.put('/team-members/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName } = req.body;
   if (req.session && req.session.team) {
-    res.json(req.session.team);
+    const teamId = req.session.team.id;
+    try {
+      const result = await pool.query('SELECT team_members FROM teams WHERE id = $1', [teamId]);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Team not found' });
+      }
+      const teamMembers = result.rows[0].team_members;
+      const memberIndex = teamMembers.findIndex(member => member.id === parseInt(id));
+      if (memberIndex === -1) {
+        return res.status(404).json({ error: 'Team member not found' });
+      }
+      teamMembers[memberIndex] = { id: parseInt(id), firstName, lastName };
+      await pool.query('UPDATE teams SET team_members = $1 WHERE id = $2', [teamMembers, teamId]);
+      res.status(200).json({ message: 'Team member updated successfully' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Server error' });
+    }
+  } else {
+    res.status(401).json({ error: 'Team not authenticated' });
+  }
+});
+
+// Route to delete a team member
+router.delete('/team-members/:id', authenticate, async (req, res) => {
+  const { id } = req.params;
+  if (req.session && req.session.team) {
+    const teamId = req.session.team.id;
+    try {
+      const result = await pool.query('SELECT team_members FROM teams WHERE id = $1', [teamId]);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Team not found' });
+      }
+      let teamMembers = result.rows[0].team_members;
+      teamMembers = teamMembers.filter(member => member.id !== parseInt(id));
+      await pool.query('UPDATE teams SET team_members = $1 WHERE id = $2', [teamMembers, teamId]);
+      res.status(200).json({ message: 'Team member deleted successfully' });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Server error' });
+    }
   } else {
     res.status(401).json({ error: 'Team not authenticated' });
   }

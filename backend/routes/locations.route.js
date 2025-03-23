@@ -78,7 +78,6 @@ router.put('/:id', authenticate, async (req, res) => {
 // Delete a location
 router.delete('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
-  console.log("ID will go here .", req.params);
   try {
     const deletedLocation = await pool.query(
       'DELETE FROM locations WHERE id = $1 RETURNING id, name, points, latitude, longitude',

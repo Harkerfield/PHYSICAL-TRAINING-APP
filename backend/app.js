@@ -46,9 +46,11 @@ app.use((req, res, next) => {
 // Serve the uploads directory as a static directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+const authRouter = require('./routes/auth.route.js');
 const locationsRouter = require('./routes/locations.route.js');
 const teamRouter = require('./routes/team.route.js');
 const gameRouter = require('./routes/game.route.js');
+app.use('/auth', authRouter);
 app.use('/locations', locationsRouter);
 app.use('/team', teamRouter);
 app.use('/game', gameRouter);
@@ -62,8 +64,7 @@ app.get('/api/routes', (req, res) => {
     { path: '/team/update-points', method: 'PUT', protected: true },
     { path: '/team/submit-location', method: 'POST', protected: true },
     { path: '/team/update-location', method: 'PUT', protected: true },
-    { path: '/team/upload', method: 'POST', protected: true },
-    { path: '/team/fetch-team', method: 'POST', protected: true }
+    { path: '/team/upload', method: 'POST', protected: true }
   ];
   res.json(routes);
 });
