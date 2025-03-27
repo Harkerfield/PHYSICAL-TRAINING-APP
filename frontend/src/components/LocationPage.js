@@ -93,7 +93,6 @@ const LocationPage = () => {
 
   return (
     <div className="location-page">
-      <h1>Manage Locations</h1>
       <button onClick={openModal} className="open-modal-btn">Add Location</button>
       <table className="table"> {/* Apply the table class */}
         <thead>

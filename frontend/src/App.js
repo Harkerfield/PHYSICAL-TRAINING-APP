@@ -11,8 +11,6 @@ import AdminPage from './components/AdminPage.js';
 import locationPage from './components/LocationPage.js';
 import MyTeamsPage from './components/MyTeamsPage';
 
-export const appContext = React.createContext();
-
 const ProtectedRoute = ({ element: Component, ...rest }) => {
   const { team } = useContext(appContext);
   return team && team.name ? (
@@ -85,5 +83,7 @@ function App({ srvPort }) {
     </appContext.Provider>
   );
 }
+
+export const appContext = React.createContext();
 
 export default App;

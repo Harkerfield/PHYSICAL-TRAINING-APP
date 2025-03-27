@@ -14,23 +14,70 @@ const AdminPage = () => {
   const [source, setSource] = useState('');
   const [message, setMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [endTime, setEndTime] = useState('2025-04-02T07:30');
+  const [randomEventFrequency, setRandomEventFrequency] = useState(300000); // Default: 5 minutes
   const navigate = useNavigate();
 
-
-
-    
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await axios.get(`http://localhost:${srvPort}/team`);
-        setTeams(response.data);
+        const response = await fetch(`http://localhost:${srvPort}/team`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setTeams(data);
       } catch (error) {
         console.error('Error fetching teams:', error);
       }
     };
+
     fetchTeams();
     const interval = setInterval(fetchTeams, 300000); // Refresh every 5 minutes
     return () => clearInterval(interval);
+  }, [srvPort]);
+
+  useEffect(() => {
+    const fetchFrequency = async () => {
+      try {
+        const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setRandomEventFrequency(data.frequency);
+      } catch (error) {
+        console.error('Error fetching random event frequency:', error);
+      }
+    };
+
+    fetchFrequency();
+  }, [srvPort]);
+
+  useEffect(() => {
+    const fetchCountdown = async () => {
+      try {
+        const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setEndTime(data.frequency);
+      } catch (error) {
+        console.error('Error fetching countdown timer:', error);
+      }
+    };
+
+    fetchCountdown();
   }, [srvPort]);
 
   const handleAddPoints = async (e) => {
@@ -61,6 +108,34 @@ const AdminPage = () => {
       setIsModalOpen(false);
     } catch (err) {
       setMessage(err.message);
+    }
+  };
+
+  const handleSetCountdown = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `http://localhost:${srvPort}/game/random-event-frequency`,
+        { frequency: endTime },
+        { withCredentials: true }
+      );
+      alert('Countdown timer updated successfully');
+    } catch (error) {
+      console.error('Error updating countdown timer:', error);
+    }
+  };
+
+  const handleFrequencyChange = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `http://localhost:${srvPort}/game/random-event-frequency`,
+        { frequency: randomEventFrequency },
+        { withCredentials: true }
+      );
+      alert('Random event frequency updated successfully');
+    } catch (error) {
+      console.error('Error updating random event frequency:', error);
     }
   };
 
@@ -124,6 +199,33 @@ const AdminPage = () => {
           </div>
         </div>
       )}
+      <div>
+        <h2>Set Countdown Timer</h2>
+        <form onSubmit={handleSetCountdown}>
+          <input
+            type="datetime-local"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            required
+          />
+          <button type="submit">Set Timer</button>
+        </form>
+      </div>
+      <div>
+        <h2>Set Random Event Frequency</h2>
+        <form onSubmit={handleFrequencyChange}>
+          <label>
+            Frequency (in milliseconds):
+            <input
+              type="number"
+              value={randomEventFrequency}
+              onChange={(e) => setRandomEventFrequency(e.target.value)}
+              required
+            />
+          </label>
+          <button type="submit">Update Frequency</button>
+        </form>
+      </div>
     </div>
   );
 };

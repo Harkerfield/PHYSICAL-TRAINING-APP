@@ -1,0 +1,32 @@
+/* Styles for PrivacyNotification component */
+.privacy-notification {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.privacy-notification p {
+  margin: 0;
+  padding: 0;
+}
+
+.privacy-notification button {
+  background-color: #ff00ff;
+  /* Hyper wave magenta for button */
+  color: #000000;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.privacy-notification button:hover {
+  background-color: #00ffff;
+  /* Hyper wave cyan for button hover */
+}

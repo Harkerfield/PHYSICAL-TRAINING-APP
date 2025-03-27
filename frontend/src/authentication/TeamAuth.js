@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { appContext } from "../App.js";
 import { Link, useNavigate } from "react-router-dom";
 import SignUp from "./SignUp.js";
+import PrivacyNotification from "../components/PrivacyNotification";
 
 const TeamAuth = () => {
   const navigate = useNavigate();
   const { srvPort, team, setTeam } = React.useContext(appContext);
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   useEffect(() => {
     const storedTeam = localStorage.getItem("team");
@@ -49,6 +51,14 @@ const TeamAuth = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const openPrivacyModal = () => {
+    setIsPrivacyModalOpen(true);
+  };
+
+  const closePrivacyModal = () => {
+    setIsPrivacyModalOpen(false);
   };
 
   return (
@@ -114,6 +124,15 @@ const TeamAuth = () => {
                   </div>
                 </div>
               </form>
+              <p className="mt-5 text-center text-sm text-gray-600 dark:text-gray-200">
+                <button
+                  onClick={openPrivacyModal}
+                  className="font-medium text-amber-600 hover:text-amber-400 ml-2"
+                >
+                  Privacy Policy
+                </button>
+              </p>
+              {isPrivacyModalOpen && <PrivacyNotification onClose={closePrivacyModal} />}
             </div>
           </div>
         </div>

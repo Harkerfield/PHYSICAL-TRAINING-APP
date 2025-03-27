@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { appContext } from "../App.js";
 import '../styles/NavBar.css';
-
+import axios from 'axios';
 import { RiDashboardFill, RiComputerLine } from "react-icons/ri";
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 function NavBar() {
   const navigate = useNavigate();
@@ -11,10 +12,64 @@ function NavBar() {
   const [open, setOpen] = useState(true);
   const { team, setteam, srvPort } = useContext(appContext);
   const [links, setLinks] = useState([]);
+  const [countdown, setCountdown] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState('');
   const currentRoute = location.pathname.replace('/', '').replace(/-/g, ' ').toUpperCase(); // Format to all caps
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   useEffect(() => { console.log("team", team) }, []);
 
+  useEffect(() => {
+    const fetchCountdown = async () => {
+      try {
+        const response = await fetch(`http://localhost:${srvPort}/game/countdown`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setCountdown(new Date(data.end_time));
+      } catch (error) {
+        console.error('Error fetching countdown timer:', error);
+      }
+    };
+
+    fetchCountdown();
+  }, [srvPort]);
+
+  useEffect(() => {
+    if (countdown) {
+      const interval = setInterval(() => {
+        const now = new Date();
+        const timeDiff = countdown - now;
+        if (timeDiff <= 0) {
+          clearInterval(interval);
+          setTimeRemaining('Time is up!');
+          alert('Time is up! The game is over.');
+          // Add logic to handle game completion
+        } else {
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+          let timeString = '';
+          if (days > 0) timeString += `${days}d `;
+          if (hours > 0) timeString += `${hours}h `;
+          if (minutes > 0) timeString += `${minutes}m `;
+          if (seconds > 0) timeString += `${seconds}s`;
+          setTimeRemaining(timeString.trim());
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [countdown]);
 
   useEffect(() => {
     //Sidebar Nav Links
@@ -22,9 +77,9 @@ function NavBar() {
       { name: "Game", to: "/game", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Teams", to: "/teams", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "My Team", to: "/my-team", icon: <RiDashboardFill />, protection: "loggedIn" },
-      { name: "Logout", to: "/logout", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Admin", to: "/admin", icon: <RiDashboardFill />, protection: "admin" },
-      { name: "Locations", to: "/locations", icon: <RiDashboardFill />, protection: "admin" }
+      { name: "Locations", to: "/locations", icon: <RiDashboardFill />, protection: "admin" },
+      { name: "Logout", to: "/logout", icon: <RiDashboardFill />, protection: "loggedIn" }
     ];
 
     // Function to check if a link should be displayed
@@ -42,27 +97,42 @@ function NavBar() {
 
   }, [team]);
 
-
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <div>
+        <div className="navbar-header">
+          <button className="dropdown-toggle" onClick={toggleDropdown}>
+            <div>Menu {dropdownOpen ? <FaChevronUp /> : <FaChevronDown />}</div>
+          </button>
           <h1>
-            18 CS {currentRoute? <>- {currentRoute}: {team.name}</> : ""}
+            18 CS {currentRoute ? <>- {currentRoute}: {team.name}</> : ""}
           </h1>
+          {countdown && (
+            <div className="countdown-timer">
+              Time remaining: {timeRemaining}
+            </div>
+          )}
         </div>
-        <hr />
+
         <div className="nav-links">
-         
-          {links.map((link, i) => (
-            <React.Fragment key={i}>
-              <Link key={i} to={link.to}>
-                <span className="link">
-                  {link.icon ? link.icon : <RiDashboardFill />} {link.name}
-                </span>
-              </Link>
-            </React.Fragment>
-          ))}
+
+          <div className="dropdown">
+
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <hr />
+                {links.map((link, i) => (
+                  <React.Fragment key={i}>
+                    <Link key={i} to={link.to} onClick={() => setDropdownOpen(false)}>
+                      <span className="link">
+                        {link.icon ? link.icon : <RiDashboardFill />} {link.name}
+                      </span>
+                    </Link>
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

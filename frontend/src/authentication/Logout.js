@@ -9,6 +9,11 @@ const Logout = () => {
 
   useEffect(() => {
     const handleLogout = async () => {
+      const confirmLogout = window.confirm('Are you sure you want to log out?');
+      if (!confirmLogout) {
+        navigate('/');
+        return;
+      }
       try {
         const response = await fetch(`http://localhost:${srvPort}/auth/logout`, {
           method: 'POST',
@@ -22,7 +27,6 @@ const Logout = () => {
         } else {
           const errorMessage = await response.text();
           console.error('Failed to log out:', errorMessage);
-
 
           localStorage.removeItem('team');
           setTeam(null);

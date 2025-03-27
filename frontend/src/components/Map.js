@@ -16,6 +16,13 @@ const MapComponent = ({ locations }) => {
   const [map, setMap] = useState(null);
   const [overlay, setOverlay] = useState(null);
 
+  const getIconSVG = (location) => {
+    if (location.type === 'custom') {
+      return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8" fill="yellow"/></svg>';
+    }
+    return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 22,22 2,22" fill="red"/></svg>';
+  };
+
   useEffect(() => {
     const initialMap = new Map({
       target: 'map',
@@ -61,7 +68,7 @@ const MapComponent = ({ locations }) => {
         });
         marker.setStyle(new Style({
           image: new Icon({
-            src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><polygon points="12,2 22,22 2,22" fill="red"/></svg>',
+            src: getIconSVG(location),
             scale: 1,
           }),
         }));
