@@ -70,10 +70,13 @@ router.post('/add-team-member', authenticate, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Team not found' });
     }
-    const teamMembers = result.rows[0].team_members;
+
+    const teamMembers = result.rows[0].team_members || [];
     teamMembers.push(memberName);
-    await pool.query('UPDATE teams SET team_members = $1 WHERE id = $2', [teamMembers, teamId]);
-    res.status(200).json({ message: 'Team member added successfully' });
+
+    await pool.query('UPDATE teams SET team_members = $1 WHERE id = $2', [JSON.stringify(teamMembers), teamId]);
+
+    res.status(200).json({ message: 'Team member added successfully', memberName });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });

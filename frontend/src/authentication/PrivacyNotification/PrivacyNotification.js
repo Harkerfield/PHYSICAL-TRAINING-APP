@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Modal from './Modal';
-import '../styles/PrivacyNotification.css';
+import Modal from '../../components/Modal/Modal'; // Import the Modal component
+import '../PrivacyNotification/PrivacyNotification.css'; // Import the CSS file for styles
 
 const PrivacyNotification = () => {
   const [isVisible, setIsVisible] = useState(false);

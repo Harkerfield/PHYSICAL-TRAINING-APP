@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
-import MapComponent from './Map';
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import MapComponent from '../Map/Map';
 import { useNavigate } from 'react-router-dom';
-import { appContext } from '../App';
-import '../styles/Teams.css';
+import { appContext } from '../../App';
+import './Game.css';
+import Modal from '../Modal/Modal';
+import PopOver from '../PopOver/PopOver';
 
 const Game = () => {
   const { srvPort } = useContext(appContext);
@@ -12,10 +14,23 @@ const Game = () => {
   const [lastPing, setLastPing] = useState(null);
   const [showDebug, setShowDebug] = useState(false);
   const [locations, setLocations] = useState([]);
-  const [countdown, setCountdown] = useState(null);
   const [randomEvent, setRandomEvent] = useState(null);
   const [randomEvents, setRandomEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamId, setTeamId] = useState(null);
+  const [showPopOver, setShowPopOver] = useState(false);
+  const [popOverMessage, setPopOverMessage] = useState({ message: '', type: 'success' });
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const teamData = localStorage.getItem('team');
+    const teamId = teamData ? JSON.parse(teamData).teamId : null;
+    console.log('Team ID from localStorage:', JSON.parse(teamData), JSON.parse(teamData).teamId);
+    setTeamId(teamId);
+  }, []);
+
+
 
   const startLocation = {
     coordinates: [127.77127083141988, 26.337389901134443],
@@ -93,7 +108,6 @@ const Game = () => {
     const promptTeam = () => {
       setShowPrompt(true);
     };
-
     const randomInterval = Math.random() * (600000 - 300000) + 300000; // Random interval between 5 and 10 minutes
     const interval = setInterval(promptTeam, randomInterval);
     return () => clearInterval(interval);
@@ -122,49 +136,7 @@ const Game = () => {
     fetchCurrentTeam();
   }, [srvPort]);
 
-  useEffect(() => {
-    const fetchCountdown = async () => {
-      try {
-        const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setCountdown(new Date(data.frequency));
-      } catch (error) {
-        console.error('Error fetching countdown timer:', error);
-        if (error.response && error.response.status === 404) {
-          const today = new Date();
-          today.setHours(7, 30, 0, 0);
-          setCountdown(today);
-        }
-      }
-    };
 
-    fetchCountdown();
-  }, [srvPort]);
-
-  useEffect(() => {
-    if (countdown) {
-      const interval = setInterval(() => {
-        const now = new Date();
-        if (now >= countdown) {
-          clearInterval(interval);
-          alert('Time is up! The game is over.');
-          // Add logic to handle game completion
-        }
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, []);
-
-  const handleQRCodeScan = () => {
-    navigate('/submit-location'); // Navigate to the LocationPassword component
-  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -259,121 +231,199 @@ const Game = () => {
     fetchData();
   }, [srvPort]);
 
-  const triggerRandomEvent = () => {
+  const handleTriggerRandomEvent = () => {
     if (randomEvents.length > 0) {
       const event = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+      console.log('Random event triggered:', event);
       setRandomEvent(event);
+      setIsModalOpen(true);
     }
   };
 
   useEffect(() => {
-    const setupRandomEventInterval = async () => {
-      const fetchFrequency = async () => {
-        try {
-          const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
-            method: 'GET',
-            credentials: 'include',
-          });
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          return data.frequency;
-        } catch (error) {
-          console.error('Error fetching random event frequency:', error);
-          return 300000; // Default to 5 minutes if there's an error
+    const setupRandomEventInterval = () => {
+      const interval = setInterval(() => {
+        if (randomEvents.length > 0) {
+          const event = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+          setRandomEvent(event);
+          setIsModalOpen(true);
         }
-      };
+      }, 300000); // Trigger every 5 minutes
 
-      const frequency = await fetchFrequency();
-      const interval = setInterval(triggerRandomEvent, frequency);
       return () => clearInterval(interval);
     };
 
-    setupRandomEventInterval();
-  }, [srvPort, randomEvents]);
+    const cleanup = setupRandomEventInterval();
+    return cleanup;
+  }, [randomEvents]);
 
-  const handleRandomEventCompletion = async () => {
-    if (randomEvent) {
-      try {
-        await fetch(`http://localhost:${srvPort}/game/add-points`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            teamId: localStorage.getItem('teamId'),
-            points: randomEvent.points,
-            source: randomEvent.description,
-          }),
-          credentials: 'include',
-        });
-        alert(`You have earned ${randomEvent.points} points for completing the event: ${randomEvent.description}`);
-        setRandomEvent(null);
-      } catch (error) {
-        console.error('Error completing random event:', error);
+  const handleAddPoints = async (teamId, points, source) => {
+    console.log('Adding points:', { teamId, points, source });
+    try {
+      const response = await fetch(`http://localhost:${srvPort}/game/add-points`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ teamId, source, points }),
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add points');
       }
+
+      const data = await response.json();
+      console.log(`${data.message} to team "${data.teamName}" for ${data.points} points`);
+
+      // Show PopOver with success message
+      setPopOverMessage({ message: `${data.points} points added to team "${data.teamName}"!`, type: 'success' });
+      setShowPopOver(true);
+    } catch (err) {
+      console.error('Error adding points:', err.message);
+      setPopOverMessage({ message: 'Error adding points. Please try again.', type: 'error' });
+      setShowPopOver(true);
+    }
+  };
+
+  const handleCompleteEvent = async () => {
+    if (randomEvent) {
+      await handleAddPoints(teamId, randomEvent.points, randomEvent.description);
+      setPopOverMessage({ message: `Event completed: ${randomEvent.description}`, type: 'success' });
+      setShowPopOver(true);
+      handleCloseModal();
     }
   };
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const pingBackend = async () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
           const teamId = localStorage.getItem('teamId');
           if (teamId) {
             try {
-              await fetch(`http://localhost:${srvPort}/game/add-points`, {
+              const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ teamId, points: 5, source: 'Location update' }),
+                body: JSON.stringify({
+                  teamId,
+                  latitude,
+                  longitude,
+                }),
                 credentials: 'include',
               });
+              if (!response.ok) {
+                throw new Error('Failed to ping backend');
+              }
               setLastPing(new Date().toLocaleString());
             } catch (error) {
-              console.error('Error updating location and adding points:', error);
+              console.error('Error pinging backend:', error);
             }
           }
         });
       }
-    }, 300000); // Every 5 minutes
+    };
 
+    const interval = setInterval(pingBackend, 300000); // Ping every 5 minutes
     return () => clearInterval(interval);
   }, [srvPort]);
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSendLocationPing = async () => {
+    console.log('Send Location Ping button clicked');
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log('Geolocation obtained:', { latitude, longitude });
+        const teamId = localStorage.getItem('teamId');
+        if (teamId) {
+          try {
+            const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                teamId,
+                latitude,
+                longitude,
+              }),
+              credentials: 'include',
+            });
+            if (!response.ok) {
+              throw new Error('Failed to ping backend');
+            }
+            const data = await response.json();
+            console.log('Ping response:', data);
+            setLastPing(data.lastPing || new Date().toLocaleString());
+          } catch (error) {
+            console.error('Error pinging backend:', error);
+          }
+        } else {
+          console.error('No teamId found in localStorage');
+        }
+      });
+    } else {
+      console.error('Geolocation is not supported by this browser');
+    }
+  };
+
   return (
-    <div className="game-container" style={{ width: '100vw', height: '100vh' }}>
-      <button onClick={() => {
-        setShowDebug(!showDebug);
-        console.log('Debug menu toggled:', !showDebug);
-      }}>
-        {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
-      </button>
-      {showDebug && (
-        <div className="debug-info">
-          <p>Last Ping: {lastPing}</p>
-        </div>
-      )}
-      <div className="map-container">
-        <MapComponent locations={locations} />
+    <div className="game-container">
+      <div className="button-section">
+
+        <button className="button" onClick={handleTriggerRandomEvent}>Trigger Random Event</button>
+        {/* {randomEvent && (
+          <div className="random-event">
+            <h3>Random Event</h3>
+            <button onClick={() => handleAddPoints(teamId, randomEvent.points, randomEvent.source)}>Complete Event</button>
+          </div>
+        )} */}
+        <button className="button" onClick={() => {
+          setShowDebug(!showDebug);
+          console.log('Debug menu toggled:', !showDebug);
+        }}>
+          {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
+        </button>
+        {showDebug && (
+          <div className="debug-info">
+            <p>Last Ping: {lastPing}</p>
+            <button onClick={handleSendLocationPing}>Send Location Ping</button>
+          </div>
+        )}
       </div>
+      {isModalOpen && (
+        <Modal onClose={handleCloseModal}>
+          <h2>Random Event</h2>
+          {randomEvent && <p>{randomEvent.description}</p>}
+          <button onClick={handleCompleteEvent}>Complete Event</button>
+          <button onClick={handleCloseModal}>Close</button>
+        </Modal>
+      )}
+      {showPopOver && (
+        <PopOver
+          content={popOverMessage}
+          onClose={() => setShowPopOver(false)}
+        />
+      )}
+
+      <MapComponent locations={locations} />
+
       {currentTeam && (
         <div className="current-team-info">
           <h2>Current Team: {currentTeam.name}</h2>
           <p>Score: {currentTeam.totalPoints}</p>
         </div>
       )}
-      {/* {randomEvent && (
-        <div className="random-event">
-          <h2>Random Event</h2>
-          <p>{randomEvent.description}</p>
-          <button onClick={handleRandomEventCompletion}>Complete Event</button>
-        </div>
-      )} */}
-      <button className="button" onClick={handleQRCodeScan}>Scan QR Code</button>
       {showPrompt && (
         <div className="prompt">
           <h2>Complete the Challenge!</h2>

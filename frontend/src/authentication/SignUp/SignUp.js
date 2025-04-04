@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { appContext } from "../App.js";
+import { appContext } from "../../App.js";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Modal.css";
-import "../styles/SignUp.css";
+import "../../components/Modal/Modal.css";
+import './SignUp.css';
 
 const SignUp = ({ closeModal }) => {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Modal from './Modal';
+import Modal from './Modal/Modal';
 import '../styles/TableStyles.css'; // Import the new TableStyles.css
 import { appContext } from '../App';
 

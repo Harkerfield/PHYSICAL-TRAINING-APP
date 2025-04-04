@@ -121,4 +121,145 @@ router.get('/points-transactions', authenticate, async (req, res) => {
   }
 });
 
+// Add route to set countdown timer
+router.post('/set-countdown', authenticate, async (req, res) => {
+  if (!req.session.team.isAdmin) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  const { endTime } = req.body;
+  try {
+    await pool.query('INSERT INTO countdown_timer (end_time) VALUES ($1)', [endTime]);
+    res.status(200).json({ message: 'Countdown timer set successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update the route to fetch the countdown timer from the settings table
+router.get('/countdown', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT value FROM settings WHERE key = $1', ['countdown_timer']);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Countdown timer not found' });
+    }
+    res.json({ end_time: result.rows[0].value });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Add route to get random events
+router.get('/random-events', authenticate, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM random_events');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get random event frequency
+router.get('/random-event-frequency', authenticate, async (req, res) => {
+  try {
+    const result = await pool.query('SELECT value FROM settings WHERE key = $1', ['random_event_frequency']);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Frequency setting not found' });
+    }
+    res.json({ frequency: parseInt(result.rows[0].value, 10) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update random event frequency
+router.put('/random-event-frequency', authenticate, async (req, res) => {
+  const { frequency } = req.body;
+  if (!req.session.team.isAdmin) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  try {
+    await pool.query('UPDATE settings SET value = $1 WHERE key = $2', [frequency, 'random_event_frequency']);
+    res.json({ message: 'Frequency updated successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Add route to update team location
+router.post('/update-location', authenticate, async (req, res) => {
+  const { teamId, latitude, longitude } = req.body;
+
+  try {
+    // Insert into team_locations
+    const locationResult = await pool.query(
+      'INSERT INTO team_locations (team_id, latitude, longitude) VALUES ($1, $2, $3) RETURNING id',
+      [teamId, latitude, longitude]
+    );
+
+    res.json({ message: 'Location updated successfully', locationId: locationResult.rows[0].id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Add route to upload media
+router.post('/upload-media', authenticate, upload.single('file'), async (req, res) => {
+  const { teamLocationId, description, mediaType } = req.body;
+
+  // Validate required fields
+  if (!teamLocationId || !description || !mediaType) {
+    return res.status(400).json({ error: 'Missing required fields: teamLocationId, description, or mediaType' });
+  }
+
+  const fileData = req.file?.buffer;
+  if (!fileData) {
+    return res.status(400).json({ error: 'File is required' });
+  }
+
+  try {
+    // Insert into media
+    await pool.query(
+      'INSERT INTO media (team_location_id, media_type, content, description) VALUES ($1, $2, $3, $4)',
+      [teamLocationId, mediaType, fileData, description]
+    );
+
+    res.json({ message: 'Media uploaded successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Add route to get all uploaded media
+router.get('/all-media', authenticate, async (req, res) => {
+  if (!req.session.team.isAdmin) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const result = await pool.query(
+      'SELECT id, team_location_id, media_type, description, content FROM media'
+    );
+
+    const media = result.rows.map((row) => ({
+      id: row.id,
+      teamLocationId: row.team_location_id,
+      mediaType: row.media_type,
+      description: row.description,
+      content: row.content.toString('base64'), // Convert binary content to base64
+    }));
+
+    res.json(media);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { appContext } from "../App.js";
 import { Link, useNavigate } from "react-router-dom";
-import SignUp from "./SignUp.js";
-import PrivacyNotification from "../components/PrivacyNotification";
+import SignUp from "./SignUp/SignUp.js";
+import PrivacyNotification from "./PrivacyNotification/PrivacyNotification.js";
 
 const TeamAuth = () => {
   const navigate = useNavigate();

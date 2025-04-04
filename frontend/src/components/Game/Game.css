@@ -2,9 +2,9 @@
 /* Remove teams-related styles as they have been moved to Teams.css */
 
 .game-container {
-  max-width: 90w;
-  background: #fff;
+  width: 100vw;
+  /* background: #fff; */
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
+  margin: 10px auto;
 }

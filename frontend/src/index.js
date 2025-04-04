@@ -4,7 +4,6 @@ import { BrowserRouter as Router, unstable_HistoryRouter as HistoryRouter } from
 import { createBrowserHistory } from 'history';
 import App from './App';
 import './styles/App.css';
-import './styles/Modal.css';
 import cyberShisa from './assets/cyber-shisa.jpeg';
 
 const srvPort = process.env.REACT_APP_SERVER_PORT || 3001;

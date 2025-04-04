@@ -1,13 +1,14 @@
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import TeamAuth from './authentication/TeamAuth.js';
-import SignUp from './authentication/SignUp.js';
 import Logout from './authentication/Logout.js';
-import NavBar from './components/NavBar.js';
-import Game from './components/Game.js';
+import NavBar from './components/NavBar/NavBar.js';
+import Game from './components/Game/Game.js';
 import TeamsPage from './components/TeamsPage';
 import './styles/App.css';
+import './styles/Button.css';
 import React, { useState, useEffect, useContext } from 'react';
 import AdminPage from './components/AdminPage.js';
+import Media from './components/Media/Media.js';
 import locationPage from './components/LocationPage.js';
 import MyTeamsPage from './components/MyTeamsPage';
 
@@ -70,6 +71,7 @@ function App({ srvPort }) {
           <Routes>
             <Route exact path="/game" element={<ProtectedRoute element={Game} />} />
             <Route exact path="/admin" element={<ProtectedRoute element={AdminPage} />} />
+            <Route exact path="/media" element={<ProtectedRoute element={Media} />} />
             <Route exact path="/locations" element={<ProtectedRoute element={locationPage} />} />
             <Route exact path="/" element={<TeamAuth />} />
             <Route path="/login" element={<TeamAuth />} />

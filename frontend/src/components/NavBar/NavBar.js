@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { appContext } from "../App.js";
-import '../styles/NavBar.css';
-import axios from 'axios';
+import { appContext } from "../../App.js";
+import './NavBar.css';
 import { RiDashboardFill, RiComputerLine } from "react-icons/ri";
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
@@ -41,7 +40,7 @@ function NavBar() {
     };
 
     fetchCountdown();
-  }, [srvPort]);
+  }, []);
 
   useEffect(() => {
     if (countdown) {
@@ -51,18 +50,18 @@ function NavBar() {
         if (timeDiff <= 0) {
           clearInterval(interval);
           setTimeRemaining('Time is up!');
-          alert('Time is up! The game is over.');
+          // alert('Time is up! The game is over.');
           // Add logic to handle game completion
         } else {
-          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
           const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
           let timeString = '';
-          if (days > 0) timeString += `${days}d `;
           if (hours > 0) timeString += `${hours}h `;
           if (minutes > 0) timeString += `${minutes}m `;
-          if (seconds > 0) timeString += `${seconds}s`;
+          if (hours === 0 && minutes === 0) timeString += `${seconds}s`;
+
           setTimeRemaining(timeString.trim());
         }
       }, 1000);
@@ -79,6 +78,7 @@ function NavBar() {
       { name: "My Team", to: "/my-team", icon: <RiDashboardFill />, protection: "loggedIn" },
       { name: "Admin", to: "/admin", icon: <RiDashboardFill />, protection: "admin" },
       { name: "Locations", to: "/locations", icon: <RiDashboardFill />, protection: "admin" },
+      { name: "Media", to: "/media", icon: <RiDashboardFill />, protection: "admin" },
       { name: "Logout", to: "/logout", icon: <RiDashboardFill />, protection: "loggedIn" }
     ];
 

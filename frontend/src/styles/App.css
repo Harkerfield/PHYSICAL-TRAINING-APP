@@ -34,18 +34,6 @@ h3 {
   text-align: center;
 }
 
-.button {
-  display: inline-block;
-  font-size: 16px;
-  color: #fff;
-  background: #35424a;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-}
-
 .button:hover {
   background: #45a049;
 }
