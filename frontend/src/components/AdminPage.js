@@ -430,6 +430,7 @@ const AdminPage = () => {
           <tr>
             <th>Team Name</th>
             <th>Score</th>
+            <th>Members</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -438,6 +439,13 @@ const AdminPage = () => {
             <tr key={team.id}>
               <td>{team.name}</td>
               <td>{team.totalPoints}</td>
+              <td>
+                <ul>
+                  {team.team_members.map((member) => (
+                    <li key={member.id}>{member.firstName} {member.lastName}</li>
+                  ))}
+                </ul>
+              </td>
               <td><button onClick={() => openModal(team)}>Add Points</button></td>
             </tr>
           ))}

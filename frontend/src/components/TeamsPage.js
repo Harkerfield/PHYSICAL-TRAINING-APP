@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { appContext } from '../App';
 import '../styles/Teams.css';
-import '../styles/TableStyles.css'; // Import the new TableStyles.css
+import '../styles/TableStyles.css';
 
 const TeamsPage = () => {
   const [teams, setTeams] = useState([]);
+  const [expandedTeams, setExpandedTeams] = useState({});
 
   const { srvPort } = useContext(appContext);
 
@@ -16,23 +17,10 @@ const TeamsPage = () => {
           credentials: 'include',
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error('Failed to fetch teams');
         }
         const data = await response.json();
         setTeams(data);
-        // Assuming the current team is stored in localStorage
-        const teamId = localStorage.getItem('teamId');
-        if (teamId) {
-          const teamResponse = await fetch(`http://localhost:${srvPort}/team/${teamId}`, {
-            method: 'GET',
-            credentials: 'include',
-          });
-          if (!teamResponse.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const teamData = await teamResponse.json();
-          setCurrentTeam(teamData);
-        }
       } catch (error) {
         console.error('Error fetching teams:', error);
       }
@@ -41,24 +29,49 @@ const TeamsPage = () => {
     fetchTeams();
   }, [srvPort]);
 
+  const toggleTeamMembers = (teamId) => {
+    setExpandedTeams((prev) => ({
+      ...prev,
+      [teamId]: !prev[teamId],
+    }));
+  };
 
   return (
     <div className="team-rankings">
-     <table className="table"> {/* Apply the table class */}
+      <table className="table">
         <thead>
           <tr>
             <th>Rank</th>
             <th>Team Name</th>
             <th>Score</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {teams.sort((a, b) => b.totalPoints - a.totalPoints).map((team, index) => (
-            <tr key={team.id}>
-              <td>{index + 1}</td>
-              <td>{team.name}</td>
-              <td>{team.totalPoints}</td>
-            </tr>
+            <React.Fragment key={team.id}>
+              <tr>
+                <td>{index + 1}</td>
+                <td>{team.name}</td>
+                <td>{team.totalPoints}</td>
+                <td>
+                  <button onClick={() => toggleTeamMembers(team.id)}>
+                    {expandedTeams[team.id] ? 'Hide Members' : 'Show Members'}
+                  </button>
+                </td>
+              </tr>
+              {expandedTeams[team.id] && team.team_members && (
+                <tr>
+                  <td colSpan="4">
+                    <ul>
+                      {team.team_members.map((member) => (
+                        <li key={member.id}>{member.firstName} {member.lastName}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
