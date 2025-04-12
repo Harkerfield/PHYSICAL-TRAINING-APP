@@ -251,7 +251,7 @@ router.get('/all-media', authenticate, async (req, res) => {
       id: row.id,
       teamLocationId: row.team_location_id,
       mediaType: row.media_type,
-      description: row.description,
+      description: row.event_description,
       content: row.content.toString('base64'), // Convert binary content to base64
     }));
 

@@ -3,14 +3,14 @@ import TeamAuth from './authentication/TeamAuth.js';
 import Logout from './authentication/Logout.js';
 import NavBar from './components/NavBar/NavBar.js';
 import Game from './components/Game/Game.js';
-import TeamsPage from './components/TeamsPage';
+import TeamScores from './components/TeamScores/TeamsScores.js';
 import './styles/App.css';
 import './styles/Button.css';
 import React, { useState, useEffect, useContext } from 'react';
 import AdminPage from './components/AdminPage.js';
 import Media from './components/Media/Media.js';
-import locationPage from './components/LocationPage.js';
-import MyTeamsPage from './components/MyTeamsPage';
+import locationPage from './components/LocationsPage/LocationsPage.js';
+import MyTeamsPage from './components/MyTeamsPage/MyTeamsPage.js';
 
 const ProtectedRoute = ({ element: Component, ...rest }) => {
   const { team } = useContext(appContext);
@@ -76,7 +76,7 @@ function App({ srvPort }) {
             <Route exact path="/" element={<TeamAuth />} />
             <Route path="/login" element={<TeamAuth />} />
             <Route path="/logout" element={<Logout />} />
-            <Route exact path="/teams" element={<ProtectedRoute element={TeamsPage} />} />
+            <Route exact path="/teamScores" element={<ProtectedRoute element={TeamScores} />} />
             <Route exact path="/my-team" element={<ProtectedRoute element={MyTeamsPage} />} />
             <Route path="*" element={<TeamAuth />} />
           </Routes>

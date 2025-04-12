@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Teams.css';
+import './MyTeamsPage.css';
+import '../../styles/TableStyles.css';
 
 const MyTeamsPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -10,13 +11,11 @@ const MyTeamsPage = () => {
   useEffect(() => {
     const teamData = localStorage.getItem('team');
     const teamId = teamData ? JSON.parse(teamData).teamId : null;
-    console.log('Team ID from localStorage:', JSON.parse(teamData), JSON.parse(teamData).teamId);
     setTeamId(teamId);
   }, []);
 
   useEffect(() => {
     const fetchTeamMembers = async () => {
-
       if (teamId) {
         try {
           const response = await fetch(`http://localhost:3001/team/${teamId}`, {
@@ -27,7 +26,6 @@ const MyTeamsPage = () => {
             throw new Error('Failed to fetch team members');
           }
           const data = await response.json();
-          console.log('Fetched team members:', data);
           setTeamMembers(data.team_members || []);
         } catch (error) {
           console.error('Error fetching team members:', error);
@@ -54,12 +52,12 @@ const MyTeamsPage = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(newMember),
-          credentials: 'include'
+          credentials: 'include',
         });
         if (!response.ok) {
           throw new Error('Failed to add team member');
         }
-        setTeamMembers([...teamMembers, newMember]);
+        setTeamMembers([...teamMembers, newMember.memberName]);
         setNewMemberFirstName('');
         setNewMemberLastName('');
       } catch (error) {
@@ -121,27 +119,44 @@ const MyTeamsPage = () => {
         />
         <button onClick={handleAddMember}>Add Member</button>
       </div>
-      <ul className="team-members-list">
-        {teamMembers.length > 0 ? (
-          teamMembers.map((member) => (
-            <li key={member.id}>
-              <input
-                type="text"
-                value={member.firstName}
-                onChange={(e) => handleEditMember(member.id, { ...member, firstName: e.target.value })}
-              />
-              <input
-                type="text"
-                value={member.lastName}
-                onChange={(e) => handleEditMember(member.id, { ...member, lastName: e.target.value })}
-              />
-              <button onClick={() => handleDeleteMember(member.id)}>Delete</button>
-            </li>
-          ))
-        ) : (
-          <p>No team members found.</p>
-        )}
-      </ul>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {teamMembers.length > 0 ? (
+            teamMembers.map((member) => (
+              <tr key={member.id}>
+                <td>
+                  <input
+                    type="text"
+                    value={member.firstName}
+                    onChange={(e) => handleEditMember(member.id, { ...member, firstName: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={member.lastName}
+                    onChange={(e) => handleEditMember(member.id, { ...member, lastName: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <button onClick={() => handleDeleteMember(member.id)}>Delete</button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">No team members found.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Modal from './Modal/Modal';
-import '../styles/TableStyles.css'; // Import the new TableStyles.css
-import { appContext } from '../App';
+import Modal from '../Modal/Modal';
+import './LocationsPage.css'; // Import the new TableStyles.css
+import { appContext } from '../../App';
 
 const LocationPage = () => {
   const { srvPort } = useContext(appContext);
@@ -93,7 +93,7 @@ const LocationPage = () => {
 
   return (
     <div className="location-page">
-      <button onClick={openModal} className="open-modal-btn">Add Location</button>
+      <button onClick={openModal} className="button open-modal-btn">Add Location</button>
       <table className="table"> {/* Apply the table class */}
         <thead>
           <tr>
@@ -112,8 +112,8 @@ const LocationPage = () => {
               <td>{location.coordinates[1]}</td>
               <td>{location.coordinates[0]}</td>
               <td>
-                <button onClick={() => handleEdit(location)}>Edit</button>
-                <button onClick={() => handleDelete(location.id)}>Delete</button>
+                <button className='button' onClick={() => handleEdit(location)}>Edit</button>
+                <button className='button' onClick={() => handleDelete(location.id)}>Delete</button>
               </td>
             </tr>
           ))}

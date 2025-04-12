@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { appContext } from '../../App';
 import './Media.css';
 
 const Media = () => {
+
+  const { srvPort } = useContext(appContext);
   const [mediaList, setMediaList] = useState([]);
 
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const response = await fetch('http://localhost:5000/game/all-media', {
+        const response = await fetch(`http://localhost:${srvPort}/game/all-media`, {
           method: 'GET',
           credentials: 'include',
         });

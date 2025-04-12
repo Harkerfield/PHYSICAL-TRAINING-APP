@@ -20,8 +20,12 @@ const Game = () => {
   const [teamId, setTeamId] = useState(null);
   const [showPopOver, setShowPopOver] = useState(false);
   const [popOverMessage, setPopOverMessage] = useState({ message: '', type: 'success' });
+  const [showUploadProgress, setShowUploadProgress] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const navigate = useNavigate();
-
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const mediaStreamRef = useRef(null);
 
   useEffect(() => {
     const teamData = localStorage.getItem('team');
@@ -29,8 +33,6 @@ const Game = () => {
     console.log('Team ID from localStorage:', JSON.parse(teamData), JSON.parse(teamData).teamId);
     setTeamId(teamId);
   }, []);
-
-
 
   const startLocation = {
     coordinates: [127.77127083141988, 26.337389901134443],
@@ -69,7 +71,7 @@ const Game = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
-          const teamId = localStorage.getItem('teamId');
+
           if (teamId) {
             try {
               await fetch('http://localhost:${srvPort}/locations', {
@@ -115,7 +117,7 @@ const Game = () => {
 
   useEffect(() => {
     const fetchCurrentTeam = async () => {
-      const teamId = localStorage.getItem('teamId');
+
       if (teamId) {
         try {
           const response = await fetch(`http://localhost:${srvPort}/team/${teamId}`, {
@@ -135,8 +137,6 @@ const Game = () => {
 
     fetchCurrentTeam();
   }, [srvPort]);
-
-
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -173,12 +173,14 @@ const Game = () => {
         if (isWithinGeofence(latitude, longitude, targetLatitude, targetLongitude, radiusInFeet)) {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('teamId', localStorage.getItem('teamId'));
+          formData.append('fileName', file.name || 'test'); // Use the original file name if available
+          formData.append('teamId', teamId);
 
           try {
-            await fetch('/api/upload', {
+            await fetch(`http://localhost:${srvPort}/game/upload`, {
               method: 'POST',
               body: formData,
+              credentials: 'include', // Include credentials (e.g., cookies) in the request
             });
             setShowPrompt(false);
             setFile(null);
@@ -196,12 +198,14 @@ const Game = () => {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('teamId', localStorage.getItem('teamId'));
+      formData.append('fileName', file.name || 'test'); // Use the original file name if available
+      formData.append('teamId', teamId);
 
       try {
-        await fetch('/api/upload', {
+        await fetch(`http://localhost:${srvPort}/game/upload`, {
           method: 'POST',
           body: formData,
+          credentials: 'include',
         });
         setShowPrompt(false);
         setFile(null);
@@ -222,6 +226,7 @@ const Game = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        console.log('Random events:', data);
         setRandomEvents(data);
       } catch (error) {
         console.error('Error fetching random events:', error);
@@ -286,11 +291,40 @@ const Game = () => {
   };
 
   const handleCompleteEvent = async () => {
+    console.log('Completing event:', randomEvent);
     if (randomEvent) {
-      await handleAddPoints(teamId, randomEvent.points, randomEvent.description);
-      setPopOverMessage({ message: `Event completed: ${randomEvent.description}`, type: 'success' });
-      setShowPopOver(true);
-      handleCloseModal();
+      console.log('Completing event:', randomEvent);
+      if (randomEvent.type === 'video' || randomEvent.type === 'picture') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileName', file.name || 'test'); // Use the original file name if available
+        formData.append('teamId', teamId);
+1
+        try {
+          const response = await fetch(`http://localhost:${srvPort}/game/upload`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            await handleAddPoints(teamId, randomEvent.points, randomEvent.description);
+            setPopOverMessage({ message: `Event completed: ${randomEvent.description}`, type: 'success' });
+            setShowPopOver(true);
+            handleCloseModal();
+          } else {
+            alert('Failed to upload the file. Please try again.');
+          }
+        } catch (error) {
+          console.error('Error uploading file:', error);
+          alert('An error occurred while uploading the file.');
+        }
+      } else if (randomEvent.type === 'workout') {
+        await handleAddPoints(teamId, randomEvent.points, randomEvent.description);
+        setPopOverMessage({ message: `Event completed: ${randomEvent.description}`, type: 'success' });
+        setShowPopOver(true);
+        handleCloseModal();
+      }
     }
   };
 
@@ -299,7 +333,7 @@ const Game = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
-          const teamId = localStorage.getItem('teamId');
+
           if (teamId) {
             try {
               const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
@@ -344,7 +378,7 @@ const Game = () => {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
         console.log('Geolocation obtained:', { latitude, longitude });
-        const teamId = localStorage.getItem('teamId');
+
         if (teamId) {
           try {
             const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
@@ -377,17 +411,111 @@ const Game = () => {
     }
   };
 
+  const handleUploadToServer = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('teamId', teamId);
+
+    try {
+      const response = await fetch(`http://localhost:${srvPort}/game/upload`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include', // Include credentials (e.g., cookies) in the request
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Upload completed successfully! Team points updated: ${data.team.total_points}`);
+        setShowUploadProgress(false);
+      } else {
+        setShowUploadProgress(false);
+        alert('Failed to upload the file. Please try again.');
+      }
+    } catch (error) {
+      setShowUploadProgress(false);
+      console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file.');
+    }
+  };
+
+  const handleStartCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      mediaStreamRef.current = mediaStream;
+      videoRef.current.srcObject = mediaStream;
+      videoRef.current.style.display = 'block';
+    } catch (error) {
+      console.error('Error starting camera:', error);
+      alert('Unable to access the camera. Please check your permissions.');
+    }
+  };
+
+  const handleCapturePicture = () => {
+    if (videoRef.current && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        setFile(blob);
+        alert('Picture captured successfully!');
+        handleStopCamera(); // Close the camera after capturing
+        setShowUploadProgress(true); // Show upload progress bar
+        handleUploadToServer(blob); // Upload to server
+      }, 'image/jpeg');
+    }
+  };
+
+  const handleStartRecording = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      mediaStreamRef.current = mediaStream;
+      const mediaRecorder = new MediaRecorder(mediaStream);
+      const chunks = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        setFile(blob);
+        alert('Video recorded successfully!');
+        handleStopCamera(); // Close the camera after recording
+        setShowUploadProgress(true); // Show upload progress bar
+        handleUploadToServer(blob); // Upload to server
+      };
+
+      mediaRecorder.start();
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 5000); // Record for 5 seconds
+    } catch (error) {
+      console.error('Error starting video recording:', error);
+      alert('Unable to record video. Please check your permissions.');
+    }
+  };
+
+  const handleStopCamera = () => {
+    if (mediaStreamRef.current) {
+      const tracks = mediaStreamRef.current.getTracks();
+      tracks.forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+      if (videoRef.current) {
+        videoRef.current.style.display = 'none';
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+
   return (
     <div className="game-container">
       <div className="button-section">
 
         <button className="button" onClick={handleTriggerRandomEvent}>Trigger Random Event</button>
-        {/* {randomEvent && (
-          <div className="random-event">
-            <h3>Random Event</h3>
-            <button onClick={() => handleAddPoints(teamId, randomEvent.points, randomEvent.source)}>Complete Event</button>
-          </div>
-        )} */}
         <button className="button" onClick={() => {
           setShowDebug(!showDebug);
           console.log('Debug menu toggled:', !showDebug);
@@ -405,6 +533,22 @@ const Game = () => {
         <Modal onClose={handleCloseModal}>
           <h2>Random Event</h2>
           {randomEvent && <p>{randomEvent.description}</p>}
+          {randomEvent && (randomEvent.type === 'video' || randomEvent.type === 'picture') && (
+            <div>
+              <video id="camera-stream" ref={videoRef} autoPlay playsInline style={{ display: 'none' }}></video>
+              <canvas id="capture-canvas" ref={canvasRef} style={{ display: 'none' }}></canvas>
+              <button onClick={handleStartCamera}>Start Camera</button>
+              <button onClick={handleCapturePicture}>Capture Picture</button>
+              <button onClick={handleStartRecording}>Record Video</button>
+              <button onClick={handleStopCamera}>Stop Camera</button>
+              {showUploadProgress && (
+                <div className="upload-progress">
+                  <p>Uploading...</p>
+                  <progress value={uploadProgress} max="100"></progress>
+                </div>
+              )}
+            </div>
+          )}
           <button onClick={handleCompleteEvent}>Complete Event</button>
           <button onClick={handleCloseModal}>Close</button>
         </Modal>

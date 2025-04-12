@@ -1,0 +1,62 @@
+/* Move teams-related styles to Teams.css */
+
+.current-team-info {
+  margin: 20px 0;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.team-rankings {
+  margin-top: 20px;
+}
+
+
+.debug-info {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.my-teams-page {
+  margin: 20px;
+}
+
+.add-member-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-member-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-member-form button {
+  padding: 8px 16px;
+  background-color: #4682b4db; /* Cooler steel blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-member-form button:hover {
+  background-color: #5a9bd3db; /* Lighter steel blue */
+}
+
+.team-members-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.team-members-list li {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}

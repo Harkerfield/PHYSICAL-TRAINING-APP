@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { appContext } from '../App';
-import '../styles/Teams.css';
-import '../styles/TableStyles.css';
+import { appContext } from '../../App';
+import './TeamScores.css';
+import '../../styles/TableStyles.css';
 
 const TeamsPage = () => {
   const [teams, setTeams] = useState([]);
@@ -55,7 +55,7 @@ const TeamsPage = () => {
                 <td>{team.name}</td>
                 <td>{team.totalPoints}</td>
                 <td>
-                  <button onClick={() => toggleTeamMembers(team.id)}>
+                  <button className='button' onClick={() => toggleTeamMembers(team.id)}>
                     {expandedTeams[team.id] ? 'Hide Members' : 'Show Members'}
                   </button>
                 </td>

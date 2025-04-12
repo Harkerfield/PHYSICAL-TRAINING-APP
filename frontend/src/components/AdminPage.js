@@ -425,9 +425,10 @@ const AdminPage = () => {
       )}
       {message && <p>{message}</p>}
       <h2>Current Scores</h2>
-      <table>
+      <table className="table">
         <thead>
           <tr>
+            <th>Rank</th>
             <th>Team Name</th>
             <th>Score</th>
             <th>Members</th>
@@ -435,8 +436,9 @@ const AdminPage = () => {
           </tr>
         </thead>
         <tbody>
-          {teams.map((team) => (
+          {teams.sort((a, b) => b.totalPoints - a.totalPoints).map((team, index) => (
             <tr key={team.id}>
+              <td>{index + 1}</td>
               <td>{team.name}</td>
               <td>{team.totalPoints}</td>
               <td>
