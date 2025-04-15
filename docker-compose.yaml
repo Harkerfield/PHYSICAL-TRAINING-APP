@@ -11,6 +11,11 @@ services:
       - app-network
     depends_on:
       - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=${FRONTEND_SERVER_PORT}"
+
   backend:
     build: ./backend
     container_name: backend
@@ -30,6 +35,11 @@ services:
       db:
         condition: service_healthy
     command: ["/bin/sh", "-c", "sleep 10 && /usr/src/app/wait-for-it.sh db:${POSTGRES_PORT} -- npm start"]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=${SERVER_PORT}"
+
   db:
     build: ./backend/db
     environment:
@@ -53,4 +63,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-    
