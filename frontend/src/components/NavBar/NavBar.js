@@ -25,7 +25,7 @@ function NavBar() {
   useEffect(() => {
     const fetchCountdown = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/countdown`, {
+        const response = await fetch(`/api/gameTransactions/countdown`, {
           method: 'GET',
           credentials: 'include',
         });

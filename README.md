@@ -208,20 +208,20 @@ By following these steps, you can effectively set up Proxmox to run Docker conta
 - **DELETE /teams/team-members/:id**: Delete a team member (authenticated).
 
 #### Game
-- **PUT /game/update-points**: Update team points (authenticated).
-- **POST /game/submit-location**: Submit a location password (authenticated).
-- **POST /game/add-points**: Add custom points (admin only).
-- **PUT /game/update-location**: Update team location (authenticated).
-- **POST /game/upload**: Upload a file and update team points (authenticated).
-- **GET /game/points-transactions**: Retrieve all point transactions (authenticated).
-- **POST /game/set-countdown**: Set a countdown timer (admin only).
-- **GET /game/countdown**: Retrieve the countdown timer.
-- **GET /game/random-events**: Retrieve random events (authenticated).
-- **GET /game/random-event-frequency**: Retrieve the random event frequency (authenticated).
-- **PUT /game/random-event-frequency**: Update the random event frequency (admin only).
-- **POST /game/update-location**: Update team location (authenticated).
-- **POST /game/upload-media**: Upload media (authenticated).
-- **GET /game/all-media**: Retrieve all uploaded media (admin only).
+- **PUT /gameTransactions/update-points**: Update team points (authenticated).
+- **POST /gameTransactions/submit-location**: Submit a location password (authenticated).
+- **POST /gameTransactions/add-points**: Add custom points (admin only).
+- **PUT /gameTransactions/update-location**: Update team location (authenticated).
+- **POST /gameTransactions/upload**: Upload a file and update team points (authenticated).
+- **GET /gameTransactions/points-transactions**: Retrieve all point transactions (authenticated).
+- **POST /gameTransactions/set-countdown**: Set a countdown timer (admin only).
+- **GET /gameTransactions/countdown**: Retrieve the countdown timer.
+- **GET /gameTransactions/random-events**: Retrieve random events (authenticated).
+- **GET /gameTransactions/random-event-frequency**: Retrieve the random event frequency (authenticated).
+- **PUT /gameTransactions/random-event-frequency**: Update the random event frequency (admin only).
+- **POST /gameTransactions/update-location**: Update team location (authenticated).
+- **POST /gameTransactions/upload-media**: Upload media (authenticated).
+- **GET /gameTransactions/all-media**: Retrieve all uploaded media (admin only).
 
 ## Frontend
 The frontend is built using React. It provides a dynamic user interface for participants and administrators.
@@ -241,5 +241,31 @@ The frontend is built using React. It provides a dynamic user interface for part
 4. **Review Media**: Access and review all uploaded media from teams.
 5. **Adjust Points**: Add or deduct points for teams as needed.
 
+## Nginx
+The Nginx server is used as a reverse proxy to route requests to the appropriate services (frontend or backend) and to serve the frontend application as a single-page application (SPA).
+
+### Configuration
+The Nginx configuration is defined in the `nginx/default.conf` file. Key features include:
+
+- **Frontend Routing**: Requests to `/` are proxied to the frontend service.
+- **Backend API Routing**: Requests to `/api` and other backend routes are proxied to the backend service.
+- **SPA Support**: Unmatched routes are served with the `index.html` file to enable frontend routing.
+
+### Docker Integration
+The Nginx server is containerized using the `nginx/Dockerfile`. It copies the `default.conf` file into the container for configuration.
+
+### Usage
+1. Ensure the `nginx/default.conf` file is correctly configured for your environment.
+2. Build and run the Nginx container using Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
+3. Access the application via the Nginx server on port 80.
+
 ## License
 This project is licensed under the MIT License.
+
+
+
+https://github.com/AntonioMaccarini/dockerize-react-node-postgres-nginx-application/tree/master
+

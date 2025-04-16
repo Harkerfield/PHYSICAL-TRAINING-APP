@@ -1,5 +1,20 @@
 # version: '3.8'
 services:
+
+  nginx:
+      build: 
+        context: nginx
+      container_name: nginx
+      restart: always
+      tty: true
+      ports: 
+        - "80:80"
+      networks: 
+        - app-network
+      depends_on:
+        - backend
+        - frontend
+
   frontend:
     build: ./frontend
     container_name: frontend
@@ -11,10 +26,6 @@ services:
       - app-network
     depends_on:
       - backend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`frontend.localhost`)"
-      - "traefik.http.services.frontend.loadbalancer.server.port=${FRONTEND_SERVER_PORT}"
 
   backend:
     build: ./backend
@@ -35,13 +46,11 @@ services:
       db:
         condition: service_healthy
     command: ["/bin/sh", "-c", "sleep 10 && /usr/src/app/wait-for-it.sh db:${POSTGRES_PORT} -- npm start"]
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`backend.localhost`)"
-      - "traefik.http.services.backend.loadbalancer.server.port=${SERVER_PORT}"
+
 
   db:
     build: ./backend/db
+    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -58,6 +67,7 @@ services:
       timeout: 5s
       retries: 5
     entrypoint: ["/bin/sh", "-c", "envsubst < /docker-entrypoint-initdb.d/init.sql > /docker-entrypoint-initdb.d/init_substituted.sql && mv /docker-entrypoint-initdb.d/init_substituted.sql /docker-entrypoint-initdb.d/init.sql && docker-entrypoint.sh postgres"]
+
 volumes:
   db-data:
 networks:

@@ -12,7 +12,7 @@ const TeamsPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/team`, {
+        const response = await fetch(`/api/team`, {
           method: 'GET',
           credentials: 'include',
         });

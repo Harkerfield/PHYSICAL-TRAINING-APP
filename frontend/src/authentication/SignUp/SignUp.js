@@ -37,7 +37,7 @@ const SignUp = ({ closeModal }) => {
       credentials: "include",
       body: JSON.stringify(formJSON),
     };
-    fetch(`http://localhost:${srvPort}/auth/register-team`, requestOptions)
+    fetch(`/api/auth/register-team`, requestOptions)
       .then((response) => response.json())
       .then((teamData) => {
         if ("error" in teamData) {

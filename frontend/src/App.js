@@ -40,7 +40,7 @@ function App({ srvPort }) {
     if (team && team.name) {
       // Save team state to local storage
       localStorage.setItem('team', JSON.stringify(team));
-      fetch(`http://localhost:${srvPort}/team/fetch-team`, {
+      fetch(`/api/team/fetch-team`, {
         method: 'POST',
         credentials: 'include', // Include credentials (cookies)
         headers: {

@@ -10,7 +10,7 @@ const Media = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/all-media`, {
+        const response = await fetch(`/api/gameTransactions/all-media`, {
           method: 'GET',
           credentials: 'include',
         });

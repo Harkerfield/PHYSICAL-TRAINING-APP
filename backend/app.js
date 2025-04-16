@@ -10,7 +10,7 @@ const { authenticate } = require('./middleware');
 const app = express();
 
 // Global config from Environment
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8000';
 const SESSION_SECRET =
   process.env.SESSION_SECRET || '6f646a6c6e6775306d7a68686d64637';
 
@@ -49,11 +49,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const authRouter = require('./routes/auth.route.js');
 const locationsRouter = require('./routes/locations.route.js');
 const teamRouter = require('./routes/team.route.js');
-const gameRouter = require('./routes/game.route.js');
-app.use('/auth', authRouter);
-app.use('/locations', locationsRouter);
-app.use('/team', teamRouter);
-app.use('/game', gameRouter);
+const gameTransactionsRouter = require('./routes/gameTransactions.route.js');
+app.use('/api/auth', authRouter);
+app.use('/api/locations', locationsRouter);
+app.use('/api/team', teamRouter);
+app.use('/api/gameTransactions', gameTransactionsRouter);
 
 app.get('/api/routes', (req, res) => {
   const routes = [

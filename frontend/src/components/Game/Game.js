@@ -48,7 +48,7 @@ const Game = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/locations`, {
+        const response = await fetch(`/api/locations`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -74,7 +74,7 @@ const Game = () => {
 
           if (teamId) {
             try {
-              await fetch('http://localhost:${srvPort}/locations', {
+              await fetch(`/api/locations`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ const Game = () => {
 
       if (teamId) {
         try {
-          const response = await fetch(`http://localhost:${srvPort}/team/${teamId}`, {
+          const response = await fetch(`/api/team/${teamId}`, {
             method: 'GET',
             credentials: 'include',
           });
@@ -177,7 +177,7 @@ const Game = () => {
           formData.append('teamId', teamId);
 
           try {
-            await fetch(`http://localhost:${srvPort}/game/upload`, {
+            await fetch(`/api/gameTransactions/upload`, {
               method: 'POST',
               body: formData,
               credentials: 'include', // Include credentials (e.g., cookies) in the request
@@ -202,7 +202,7 @@ const Game = () => {
       formData.append('teamId', teamId);
 
       try {
-        await fetch(`http://localhost:${srvPort}/game/upload`, {
+        await fetch(`/api/gameTransactions/upload`, {
           method: 'POST',
           body: formData,
           credentials: 'include',
@@ -218,7 +218,7 @@ const Game = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/random-events`, {
+        const response = await fetch(`/api/gameTransactions/random-events`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -265,7 +265,7 @@ const Game = () => {
   const handleAddPoints = async (teamId, points, source) => {
     console.log('Adding points:', { teamId, points, source });
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/add-points`, {
+      const response = await fetch(`/api/gameTransactions/add-points`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -301,7 +301,7 @@ const Game = () => {
         formData.append('teamId', teamId);
 1
         try {
-          const response = await fetch(`http://localhost:${srvPort}/game/upload`, {
+          const response = await fetch(`/api/gameTransactions/upload`, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -336,7 +336,7 @@ const Game = () => {
 
           if (teamId) {
             try {
-              const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
+              const response = await fetch(`/api/gameTransactions/ping`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -381,7 +381,7 @@ const Game = () => {
 
         if (teamId) {
           try {
-            const response = await fetch(`http://localhost:${srvPort}/game/ping`, {
+            const response = await fetch(`/api/gameTransactions/ping`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -417,7 +417,7 @@ const Game = () => {
     formData.append('teamId', teamId);
 
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/upload`, {
+      const response = await fetch(`/api/gameTransactions/upload`, {
         method: 'POST',
         body: formData,
         credentials: 'include', // Include credentials (e.g., cookies) in the request

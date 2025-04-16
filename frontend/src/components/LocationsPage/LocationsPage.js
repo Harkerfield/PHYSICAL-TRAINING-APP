@@ -16,7 +16,7 @@ const LocationPage = () => {
 
   const fetchLocations = async () => {
     try {
-      const response = await fetch(`http://localhost:${srvPort}/locations`, {
+      const response = await fetch(`/api/locations`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -35,14 +35,14 @@ const LocationPage = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await fetch(`http://localhost:${srvPort}/locations/${editingId}`, { // Include srvPort in the URL
+        await fetch(`/api/locations/${editingId}`, { // Include srvPort in the URL
           credentials: 'include',
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(form),
         });
       } else {
-        await fetch(`http://localhost:${srvPort}/locations`, { // Include srvPort in the URL
+        await fetch(`/api/locations`, { // Include srvPort in the URL
           credentials: 'include',
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,7 +71,7 @@ const LocationPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:${srvPort}/locations/${id}`, {
+      await fetch(`/api/locations/${id}`, {
         credentials: 'include',
         method: 'DELETE'
       }); // Include srvPort in the URL

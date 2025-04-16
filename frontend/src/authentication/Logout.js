@@ -15,7 +15,7 @@ const Logout = () => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:${srvPort}/auth/logout`, {
+        const response = await fetch(`/api/auth/logout`, {
           method: 'POST',
           credentials: 'include',
         });

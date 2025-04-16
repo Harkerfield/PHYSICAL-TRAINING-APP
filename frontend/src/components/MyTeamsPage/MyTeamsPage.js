@@ -46,7 +46,7 @@ const MyTeamsPage = () => {
         },
       };
       try {
-        const response = await fetch('http://localhost:3001/team/add-team-member', {
+        const response = await fetch(`http://localhost:3001/team/add-team-member`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

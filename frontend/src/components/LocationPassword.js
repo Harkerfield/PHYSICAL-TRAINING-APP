@@ -13,7 +13,7 @@ const LocationPassword = () => {
 
     try {
       const teamId = localStorage.getItem('teamId');
-      const response = await fetch('http://localhost:3001/team/submit-location', {
+      const response = await fetch(`http://localhost:3001/team/submit-location`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

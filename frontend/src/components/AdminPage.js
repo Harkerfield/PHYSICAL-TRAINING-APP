@@ -30,7 +30,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/team`, {
+        const response = await fetch(`/api/team`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -52,7 +52,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchFrequency = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+        const response = await fetch(`/api/gameTransactions/random-event-frequency`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -72,7 +72,7 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchCountdown = async () => {
       try {
-        const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+        const response = await fetch(`/api/gameTransactions/random-event-frequency`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -93,7 +93,7 @@ const AdminPage = () => {
     e.preventDefault();
     setMessage('');
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/add-points`, {
+      const response = await fetch(`/api/gameTransactions/add-points`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const AdminPage = () => {
   const handleSetCountdown = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+      const response = await fetch(`/api/gameTransactions/random-event-frequency`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ const AdminPage = () => {
   const handleFrequencyChange = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/random-event-frequency`, {
+      const response = await fetch(`/api/gameTransactions/random-event-frequency`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ const AdminPage = () => {
 
   const handleUpdateLocation = async (latitude, longitude) => {
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/update-location`, {
+      const response = await fetch(`/api/gameTransactions/update-location`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ const AdminPage = () => {
     formData.append('mediaType', mediaType);
 
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/upload-media`, {
+      const response = await fetch(`/api/gameTransactions/upload-media`, {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -343,7 +343,7 @@ const AdminPage = () => {
         formData.append('mediaType', 'video');
 
         try {
-          const response = await fetch(`http://localhost:${srvPort}/game/upload-media`, {
+          const response = await fetch(`/api/gameTransactions/upload-media`, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -386,7 +386,7 @@ const AdminPage = () => {
     formData.append('mediaType', mediaType);
 
     try {
-      const response = await fetch(`http://localhost:${srvPort}/game/upload-media`, {
+      const response = await fetch(`/api/gameTransactions/upload-media`, {
         method: 'POST',
         body: formData,
         credentials: 'include',
