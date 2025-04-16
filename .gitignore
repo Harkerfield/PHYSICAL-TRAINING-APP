@@ -18,9 +18,6 @@ Thumbs.db
 # IDE specific files
 .vscode/
 
-# Docker
-**/Dockerfile
-**/docker-compose.*
 
 # Build
 build/

@@ -1,0 +1,55 @@
+# version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "${FRONTEND_SERVER_PORT}:${FRONTEND_SERVER_PORT}"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    networks:
+      - app-network
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - NODE_ENV=${NODE_ENV}
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["/bin/sh", "-c", "sleep 10 && /usr/src/app/wait-for-it.sh db:${POSTGRES_PORT} -- npm start"]
+  db:
+    build: ./backend/db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./backend/db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint: ["/bin/sh", "-c", "envsubst < /docker-entrypoint-initdb.d/init.sql > /docker-entrypoint-initdb.d/init_substituted.sql && mv /docker-entrypoint-initdb.d/init_substituted.sql /docker-entrypoint-initdb.d/init.sql && docker-entrypoint.sh postgres"]
+volumes:
+  db-data:
+networks:
+  app-network:
+    driver: bridge
